@@ -24,7 +24,7 @@ type GameActions = {
 const initState: GameState = {
   guessesMatrix: [],
   currentWord: [],
-  answerWord: "fight",
+  answerWord: "proof",
   MAX_WORD_LENGTH: 5,
   MAX_TRYS: 6,
   error: null,
