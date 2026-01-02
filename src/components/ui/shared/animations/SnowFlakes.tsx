@@ -7,7 +7,6 @@ interface Snowflake {
   size: number;
   delay: number;
   duration: number;
-  startY: number;
 }
 
 export default function SnowFlakes() {
@@ -20,7 +19,6 @@ export default function SnowFlakes() {
       size: 3 + Math.random() * 8,
       delay: Math.random() * 5,
       duration: 5 + Math.random() * 10,
-      startY: -50 + Math.random() * 100,
     }));
     setSnowflakes(flakes);
   }, []);
@@ -35,7 +33,7 @@ export default function SnowFlakes() {
             left: `${flake.left}%`,
             width: `${flake.size}px`,
             height: `${flake.size}px`,
-            top: `${flake.startY}px`,
+            top: `-30px`,
             animation: `fall ${flake.duration}s linear ${flake.delay}s infinite`,
           }}
         />

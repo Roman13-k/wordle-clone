@@ -12,9 +12,8 @@
   },
   "iconLibrary": "phosphor",
   "aliases": {
-    "components": "@/components",
+    "components": "@/components/ui/shared",
     "utils": "@/lib/utils",
-    "ui": "@/components/ui",
     "lib": "@/lib",
     "hooks": "@/hooks"
   },

@@ -1,5 +1,5 @@
 import React, { PropsWithChildren } from "react";
-import SnowFlakes from "../ui/animations/SnowFlakes";
+import SnowFlakes from "../shared/animations/SnowFlakes";
 
 export default function MainContainer({ children }: PropsWithChildren) {
   return (

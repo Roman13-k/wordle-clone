@@ -19,6 +19,7 @@ type GameActions = {
   deleteLetter: () => void;
   submitWord: () => void;
   addError: (ms: string) => void;
+  setMatrix: (matrix: GameState["guessesMatrix"]) => void;
 };
 
 const initState: GameState = {
@@ -83,4 +84,6 @@ export const useGameStore = create<GameState & GameActions>((set) => ({
       useToastStore.getState().showMiniToast(ms);
       return { error: ms, isInputBlock: true };
     }),
+
+  setMatrix: (matrix) => set(() => ({ guessesMatrix: matrix })),
 }));

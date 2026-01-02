@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, DM_Sans } from "next/font/google";
 import "./globals.css";
-import ToastStack from "@/components/blocks/toasts/ToastStack";
-import MiniToast from "@/components/blocks/toasts/MiniToast";
+import ToastStack from "@/components/ui/blocks/toasts/ToastStack";
+import MiniToast from "@/components/ui/blocks/toasts/MiniToast";
 
 const dmSans = DM_Sans({ subsets: ["latin"], variable: "--font-sans" });
 
