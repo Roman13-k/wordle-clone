@@ -1,3 +1,4 @@
+"use client";
 import {
   Dialog,
   DialogContent,
@@ -13,9 +14,26 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/shared/tooltip";
-import { Lightbulb } from "lucide-react";
+import { useGameStore } from "@/stores/gameStore";
+import { ChevronLeft, ChevronRight, Lightbulb } from "lucide-react";
+import { useState } from "react";
 
 export default function HintModal() {
+  const { hints } = useGameStore();
+  const hintsCount = hints.length;
+  const [currentHintIndex, setCurrentHintIndex] = useState(0);
+  const [revealedHints, setRevealedHints] = useState<boolean[]>(() =>
+    Array(hintsCount).fill(false)
+  );
+
+  const revealCurrentHint = () => {
+    setRevealedHints((prev) => {
+      const copy = [...prev];
+      copy[currentHintIndex] = true;
+      return copy;
+    });
+  };
+
   return (
     <Dialog>
       <TooltipProvider delayDuration={200}>
@@ -34,14 +52,79 @@ export default function HintModal() {
         </Tooltip>
       </TooltipProvider>
 
-      <DialogContent className="sm:max-w-106.25">
+      <DialogContent className="sm:max-w-105">
         <DialogHeader>
-          <DialogTitle>Edit profile</DialogTitle>
+          <DialogTitle className="flex items-center justify-between">
+            <span>
+              Подсказка {currentHintIndex + 1} / {hintsCount}
+            </span>
+
+            <div className="flex gap-2 mr-10">
+              <button
+                disabled={currentHintIndex === 0}
+                onClick={() =>
+                  setCurrentHintIndex((prev) => (prev === 0 ? prev : prev - 1))
+                }
+                className="p-1 cursor-pointer disabled:cursor-auto rounded-md hover:bg-muted transition disabled:opacity-40"
+                aria-label="Предыдущая подсказка"
+              >
+                <ChevronLeft />
+              </button>
+              <button
+                disabled={currentHintIndex === hintsCount - 1}
+                onClick={() =>
+                  setCurrentHintIndex((prev) =>
+                    prev === hintsCount - 1 ? prev : prev + 1
+                  )
+                }
+                className="p-1 cursor-pointer disabled:cursor-auto rounded-md hover:bg-muted transition disabled:opacity-40"
+                aria-label="Следующая подсказка"
+              >
+                <ChevronRight />
+              </button>
+            </div>
+          </DialogTitle>
+
           <DialogDescription>
-            Make changes to your profile here. Click save when you&apos;re done.
+            Подсказка поможет, если застряли, но используйте с умом 😉
           </DialogDescription>
         </DialogHeader>
-        <DialogFooter></DialogFooter>
+
+        <div className="mt-4">
+          <button
+            onClick={revealCurrentHint}
+            disabled={revealedHints[currentHintIndex]}
+            className="
+      relative w-full rounded-lg border border-border p-4 text-left transition bg-muted/40 hover:bg-muted/60 cursor-pointer disabled:cursor-default"
+          >
+            <p
+              className={`select-none text-sm leading-relaxed transition-all duration-300
+                        ${
+                          revealedHints[currentHintIndex] ? "blur-0" : "blur-sm"
+                        }`}
+            >
+              {hints[currentHintIndex]}
+            </p>
+
+            {!revealedHints[currentHintIndex] && (
+              <div
+                className="
+          absolute inset-0 flex items-center justify-center
+          text-xs text-muted-foreground
+          pointer-events-none
+        "
+              >
+                Нажмите, чтобы открыть подсказку
+              </div>
+            )}
+          </button>
+        </div>
+
+        <DialogFooter className="mt-4">
+          <span className="text-xs text-muted-foreground">
+            Использование подсказок снижает сложность игры
+          </span>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

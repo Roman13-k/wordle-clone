@@ -1,4 +1,5 @@
 export type LetterState = "correct" | "present" | "absent";
+export type GameStatusType = "playing" | "win" | "lose";
 
 export type GuessRow = {
   letters: string[];

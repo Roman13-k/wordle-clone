@@ -1,5 +1,4 @@
 "use client";
-import { ConfirmType } from "@/types";
 import { Button } from "../../../shared/button";
 import {
   Dialog,
@@ -9,16 +8,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../../../shared/dialog";
+import { useSaveCurrentGuess } from "@/hooks/useSaveCurrentGuess";
 
-interface ConfirmModalProps {
-  setConfirmModal: (v: "close" | "open" | ConfirmType) => void;
-  isConfirmModal: "close" | "open" | ConfirmType;
-}
+export default function ConfirmModal() {
+  const [isConfirmModal, setIsConfirmModal] = useSaveCurrentGuess();
 
-export default function ConfirmModal({
-  setConfirmModal,
-  isConfirmModal,
-}: ConfirmModalProps) {
   return (
     <Dialog open={isConfirmModal === "open"} onOpenChange={(open) => !open}>
       <DialogContent>
@@ -29,10 +23,12 @@ export default function ConfirmModal({
           Вы можете загрузить свою прошлую попытку или начать заново.
         </DialogDescription>
         <DialogFooter>
-          <Button onClick={() => setConfirmModal("success")}>Загрузить</Button>
+          <Button onClick={() => setIsConfirmModal("success")}>
+            Загрузить
+          </Button>
           <Button
             variant={"destructive"}
-            onClick={() => setConfirmModal("rejected")}
+            onClick={() => setIsConfirmModal("rejected")}
           >
             Очистить
           </Button>
