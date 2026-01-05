@@ -16,12 +16,20 @@ import {
 } from "@/components/ui/shared/tooltip";
 import { useGameStore } from "@/stores/gameStore";
 import { ChevronLeft, ChevronRight, Lightbulb } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function HintModal() {
-  const { hints, revealHint } = useGameStore();
+  const { hints, revealHint, generateHints } = useGameStore();
   const hintsCount = hints.length;
   const [currentHintIndex, setCurrentHintIndex] = useState(0);
+
+  useEffect(() => {
+    if (hintsCount) return;
+
+    generateHints();
+  }, []);
+
+  if (!hintsCount) return null;
 
   return (
     <Dialog>

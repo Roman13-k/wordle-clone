@@ -3,6 +3,7 @@ import { useToastStore } from "./toastStore";
 import { WORDS } from "@/dictionaries/words";
 import { GameStatusType, GuessRow } from "@/types/game";
 import { checkWord } from "@/utils/functions/checkWord";
+import { generateHint } from "@/utils/functions/generateHint";
 
 type GameState = {
   guessesMatrix: GuessRow[];
@@ -25,20 +26,14 @@ type GameActions = {
   setGameStatus: (status: GameState["gameStatus"]) => void;
   resetGame: () => void;
   revealHint: (index: number) => void;
+  generateHints: (count?: number) => void;
 };
 
 const initState: GameState = {
   guessesMatrix: [],
   currentWord: [],
   answerWord: "proof",
-  hints: [
-    {
-      text: "В загаданном слове есть буква, которая встречается дважды.",
-      revealed: false,
-    },
-    { text: "В слове есть буква F.", revealed: false },
-    { text: "В слове 2 гласных.", revealed: false },
-  ],
+  hints: [],
   MAX_WORD_LENGTH: 5,
   MAX_TRYS: 6,
   error: null,
@@ -97,7 +92,7 @@ export const useGameStore = create<GameState & GameActions>((set) => ({
     });
   },
 
-  revealHint: (index: number) =>
+  revealHint: (index) =>
     set((state) => {
       const newHints = state.hints.map((h, i) =>
         i === index ? { ...h, revealed: true } : h
@@ -105,7 +100,19 @@ export const useGameStore = create<GameState & GameActions>((set) => ({
       return { hints: newHints };
     }),
 
-  addError: (ms: string) =>
+  generateHints: (count = 3) =>
+    set((state) => {
+      const generatedHints: GameState["hints"] = [];
+
+      for (let i = 0; i < count; i++) {
+        const text = generateHint(state.answerWord);
+        generatedHints.push({ text, revealed: false });
+      }
+
+      return { hints: generatedHints };
+    }),
+
+  addError: (ms) =>
     set(() => {
       setTimeout(() => {
         set({ error: null, isInputBlock: false });

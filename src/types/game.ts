@@ -13,3 +13,10 @@ export enum LETTERCOLOR {
   "present" = "bg-present",
   "absent" = "bg-sidebar-ring",
 }
+
+export type HintsVariantsType =
+  | "randomLetter"
+  | "vowelCount"
+  | "consonantCount"
+  | "startsWithLetter"
+  | "endsWithLetter";
