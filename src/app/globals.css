@@ -149,3 +149,7 @@
     transform: translateX(5px) scale(1.05);
   }
 }
+
+.dialog-delay {
+  animation-delay: 700ms;
+}

@@ -1,5 +1,7 @@
 export type LetterState = "correct" | "present" | "absent";
+
 export type GameStatusType = "playing" | "win" | "lose";
+export type ResultStatusType = Exclude<GameStatusType, "playing">;
 
 export type GuessRow = {
   letters: string[];

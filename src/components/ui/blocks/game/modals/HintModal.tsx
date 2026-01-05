@@ -19,20 +19,9 @@ import { ChevronLeft, ChevronRight, Lightbulb } from "lucide-react";
 import { useState } from "react";
 
 export default function HintModal() {
-  const { hints } = useGameStore();
+  const { hints, revealHint } = useGameStore();
   const hintsCount = hints.length;
   const [currentHintIndex, setCurrentHintIndex] = useState(0);
-  const [revealedHints, setRevealedHints] = useState<boolean[]>(() =>
-    Array(hintsCount).fill(false)
-  );
-
-  const revealCurrentHint = () => {
-    setRevealedHints((prev) => {
-      const copy = [...prev];
-      copy[currentHintIndex] = true;
-      return copy;
-    });
-  };
 
   return (
     <Dialog>
@@ -92,21 +81,23 @@ export default function HintModal() {
 
         <div className="mt-4">
           <button
-            onClick={revealCurrentHint}
-            disabled={revealedHints[currentHintIndex]}
+            onClick={() => revealHint(currentHintIndex)}
+            disabled={hints[currentHintIndex].revealed}
             className="
       relative w-full rounded-lg border border-border p-4 text-left transition bg-muted/40 hover:bg-muted/60 cursor-pointer disabled:cursor-default"
           >
             <p
               className={`select-none text-sm leading-relaxed transition-all duration-300
                         ${
-                          revealedHints[currentHintIndex] ? "blur-0" : "blur-sm"
+                          hints[currentHintIndex].revealed
+                            ? "blur-0"
+                            : "blur-sm"
                         }`}
             >
-              {hints[currentHintIndex]}
+              {hints[currentHintIndex].text}
             </p>
 
-            {!revealedHints[currentHintIndex] && (
+            {!hints[currentHintIndex].revealed && (
               <div
                 className="
           absolute inset-0 flex items-center justify-center

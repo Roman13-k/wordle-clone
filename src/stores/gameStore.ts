@@ -8,7 +8,7 @@ type GameState = {
   guessesMatrix: GuessRow[];
   currentWord: string[];
   answerWord: string;
-  hints: string[];
+  hints: { text: string; revealed: boolean }[];
   MAX_WORD_LENGTH: 5;
   MAX_TRYS: 6;
   gameStatus: GameStatusType;
@@ -23,6 +23,8 @@ type GameActions = {
   addError: (ms: string) => void;
   setMatrix: (matrix: GameState["guessesMatrix"]) => void;
   setGameStatus: (status: GameState["gameStatus"]) => void;
+  resetGame: () => void;
+  revealHint: (index: number) => void;
 };
 
 const initState: GameState = {
@@ -30,9 +32,12 @@ const initState: GameState = {
   currentWord: [],
   answerWord: "proof",
   hints: [
-    " В загаданном слове есть буква, которая встречается дважды.",
-    "В слове есть буква F.",
-    "В слове 2 глассных.",
+    {
+      text: "В загаданном слове есть буква, которая встречается дважды.",
+      revealed: false,
+    },
+    { text: "В слове есть буква F.", revealed: false },
+    { text: "В слове 2 гласных.", revealed: false },
   ],
   MAX_WORD_LENGTH: 5,
   MAX_TRYS: 6,
@@ -82,7 +87,7 @@ export const useGameStore = create<GameState & GameActions>((set) => ({
     const status: GameStatusType =
       word === answerWord
         ? "win"
-        : guessesMatrix.length === MAX_TRYS
+        : guessesMatrix.length + 1 === MAX_TRYS
         ? "lose"
         : "playing";
     set({
@@ -91,6 +96,14 @@ export const useGameStore = create<GameState & GameActions>((set) => ({
       gameStatus: status,
     });
   },
+
+  revealHint: (index: number) =>
+    set((state) => {
+      const newHints = state.hints.map((h, i) =>
+        i === index ? { ...h, revealed: true } : h
+      );
+      return { hints: newHints };
+    }),
 
   addError: (ms: string) =>
     set(() => {
@@ -101,6 +114,16 @@ export const useGameStore = create<GameState & GameActions>((set) => ({
       useToastStore.getState().showMiniToast(ms);
       return { error: ms, isInputBlock: true };
     }),
+
+  resetGame: () => {
+    set(() => ({
+      guessesMatrix: [],
+      currentWord: [],
+      gameStatus: "playing",
+      error: null,
+      isInputBlock: false,
+    }));
+  },
 
   setMatrix: (matrix) => set(() => ({ guessesMatrix: matrix })),
   setGameStatus: (status) => set(() => ({ gameStatus: status })),
