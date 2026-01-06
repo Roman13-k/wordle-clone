@@ -2,7 +2,7 @@
 import MainContainer from "../ui/layout/MainContainer";
 import Plates from "../ui/blocks/game/Plates";
 import Keys from "../ui/blocks/game/Keys";
-import Header from "../ui/layout/Header";
+import Header from "../ui/layout/header/Header";
 import ConfirmModal from "../ui/blocks/game/modals/ConfirmModal";
 import ResultModal from "../ui/blocks/game/modals/ResultModal";
 

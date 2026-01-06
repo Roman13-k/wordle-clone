@@ -44,8 +44,8 @@ export default function Plates() {
                     {letter && (
                       <motion.div
                         style={{ backfaceVisibility: "hidden" }}
-                        className="absolute w-15.5 h-15.5 rounded-lg border-2 border-black
-                 font-bold text-2xl flex justify-center items-center bg-background"
+                        className="absolute w-15.5 h-15.5 rounded-lg border-2 border-black dark:border-sidebar-ring/40
+                 font-bold text-2xl flex justify-center items-center bg-background dark:bg-sidebar-ring/40"
                         initial={{ scale: 0.5 }}
                         animate={{ scale: 1 }}
                         exit={{ scale: 0 }}
