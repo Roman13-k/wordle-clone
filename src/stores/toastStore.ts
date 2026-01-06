@@ -5,7 +5,8 @@ export type MiniToastType = "info";
 
 export type Toast = {
   id: string;
-  message: string;
+  title: string;
+  description:string;
   type: ToastType;
 };
 
@@ -18,7 +19,7 @@ export type MiniToast = {
 type ToastStore = {
   toasts: Toast[];
   miniToast: MiniToast | null;
-  addToast: (message: string, type: ToastType) => void;
+  addToast: (title: string, description:string,type: ToastType) => void;
   removeToast: (id: string) => void;
   showMiniToast: (message: string) => void;
   hideMiniToast: () => void;
@@ -28,15 +29,15 @@ export const useToastStore = create<ToastStore>((set) => ({
   toasts: [],
   miniToast: null,
 
-  addToast: (message, type) => {
+  addToast: (title,description, type) => {
     const id = crypto.randomUUID();
     set((state) => ({
-      toasts: [...state.toasts, { id, message, type }],
+      toasts: [...state.toasts, { id, title,description, type }],
     }));
 
     setTimeout(() => {
       useToastStore.getState().removeToast(id);
-    }, 3000);
+    }, 5000);
   },
 
   removeToast: (id) =>

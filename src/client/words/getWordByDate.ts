@@ -19,7 +19,7 @@ export async function getWordByDate(date: Date):Promise<DailyWordI> {
             date,
              en_words (
              word
-            )
+    )
             `)
     .eq("date", isoDate)
     .single<WordSBType>()

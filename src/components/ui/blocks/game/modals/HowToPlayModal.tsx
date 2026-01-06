@@ -60,7 +60,14 @@ export default function HowToPlayModal() {
   };
 
   return (
-    <Dialog defaultOpen={isFirstLoad} open={open} onOpenChange={setOpen}>
+    <Dialog
+      defaultOpen={isFirstLoad}
+      open={open}
+      onOpenChange={(open) => {
+        setOpen(open);
+        if (!open) setIsFirstLoad(false);
+      }}
+    >
       <TooltipProvider delayDuration={200}>
         <Tooltip>
           <TooltipTrigger asChild>

@@ -10,7 +10,7 @@ export default function MainScreen() {
   return (
     <MainContainer>
       <Header />
-      <main>
+      <main className="h-full">
         <GameWrapper className="flex flex-col gap-15 h-full items-center justify-center">
           <Plates />
           <Keys />

@@ -7,29 +7,25 @@ const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 async function pickRandomWord() {
-  const { data, error } = await supabase
-    .from("en_Words")
-    .select("word")
-    .order("RANDOM()")
-    .limit(1)
-    .single();
+  const { data, error } = await supabase.rpc("get_random_word");
 
-  if (error || !data) throw new Error(error?.message || "No words found");
+  if (error || !data || data.length === 0)
+    throw new Error(error?.message || "No words found");
 
-  return data.word;
+  return data[0].id;
 }
 
-async function insertDailyWord(word: string) {
+async function insertDailyWord(wordId: string) {
   const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
 
   const { error } = await supabase.from("daily_words").upsert({
-    word,
+    word_id: wordId,
     date: today,
   });
 
   if (error) throw new Error(error.message);
 
-  return { word, date: today };
+  return { word_id: wordId, date: today };
 }
 
 Deno.serve(async () => {
@@ -50,8 +46,8 @@ Deno.serve(async () => {
       });
     }
 
-    const word = await pickRandomWord();
-    const result = await insertDailyWord(word);
+    const id = await pickRandomWord();
+    const result = await insertDailyWord(id);
 
     return new Response(JSON.stringify(result), {
       headers: { "Content-Type": "application/json" },
