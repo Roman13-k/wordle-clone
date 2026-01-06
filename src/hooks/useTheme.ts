@@ -9,22 +9,24 @@ export function useTheme() {
     "theme",
     "system"
   );
-  const [theme, setThemeState] = useState<ThemeType | null>(storedTheme);
+  const [theme, setThemeState] = useState<ThemeType>(storedTheme ?? "system");
 
   const setTheme = useCallback((newTheme: ThemeType) => {
     setThemeState(newTheme);
     setStoredTheme(newTheme);
+  }, [setStoredTheme]);
 
+  useEffect(() => {
     const resolved =
-      newTheme === "system"
+      theme === "system"
         ? window.matchMedia("(prefers-color-scheme: dark)").matches
           ? "dark"
           : "light"
-        : newTheme;
+        : theme;
 
     document.documentElement.classList.remove("light", "dark");
     document.documentElement.classList.add(resolved);
-  }, []);
+  }, [theme]);
 
   return {
     theme,

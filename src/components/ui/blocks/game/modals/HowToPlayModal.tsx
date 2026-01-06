@@ -8,7 +8,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/shared/dialog";
 import { Button } from "@/components/ui/shared/button";
 import { BookOpen } from "lucide-react";
@@ -19,6 +18,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/shared/tooltip";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { useEffect, useState } from "react";
 
 function ExampleRow({
   letters,
@@ -44,16 +45,31 @@ function ExampleRow({
 }
 
 export default function HowToPlayModal() {
+  const [isFirstLoad, setIsFirstLoad] = useLocalStorage("isFirstLoad", true);
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (isFirstLoad) {
+      setOpen(true);
+    }
+  }, [isFirstLoad]);
+
+  const handleClose = () => {
+    setOpen(false);
+    setIsFirstLoad(false);
+  };
+
   return (
-    <Dialog>
+    <Dialog defaultOpen={isFirstLoad} open={open} onOpenChange={setOpen}>
       <TooltipProvider delayDuration={200}>
         <Tooltip>
           <TooltipTrigger asChild>
-            <DialogTrigger asChild>
-              <button className="cursor-pointer hover:opacity-80 transition">
-                <BookOpen size={30} />
-              </button>
-            </DialogTrigger>
+            <button
+              onClick={() => setOpen(true)}
+              className="cursor-pointer hover:opacity-80 transition"
+            >
+              <BookOpen size={30} />
+            </button>
           </TooltipTrigger>
 
           <TooltipContent side="bottom">
@@ -116,7 +132,7 @@ export default function HowToPlayModal() {
 
         <DialogFooter>
           <DialogClose asChild>
-            <Button>Понятно</Button>
+            <Button onClick={handleClose}>Понятно</Button>
           </DialogClose>
         </DialogFooter>
       </DialogContent>

@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, DM_Sans } from "next/font/google";
 import "./globals.css";
 import ToastStack from "@/components/ui/blocks/toasts/ToastStack";
 import MiniToast from "@/components/ui/blocks/toasts/MiniToast";
+import { ReactQueryProvider } from "@/components/providers/ReactQueryProvider";
 
 const dmSans = DM_Sans({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -27,14 +28,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={dmSans.variable}>
+    <html lang="en" suppressHydrationWarning className={dmSans.variable}>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ToastStack />
-        <MiniToast />
-
-        {children}
+        <ReactQueryProvider>
+          <ToastStack />
+          <MiniToast />
+          {children}
+        </ReactQueryProvider>
       </body>
     </html>
   );

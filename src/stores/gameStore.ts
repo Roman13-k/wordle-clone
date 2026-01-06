@@ -8,7 +8,7 @@ import { generateHint } from "@/utils/functions/generateHint";
 type GameState = {
   guessesMatrix: GuessRow[];
   currentWord: string[];
-  answerWord: string;
+  answerWord: string|null;
   hints: { text: string; revealed: boolean }[];
   MAX_WORD_LENGTH: 5;
   MAX_TRYS: 6;
@@ -24,6 +24,7 @@ type GameActions = {
   addError: (ms: string) => void;
   setMatrix: (matrix: GameState["guessesMatrix"]) => void;
   setGameStatus: (status: GameState["gameStatus"]) => void;
+  setAnswerWord:(word:GameState["answerWord"])=>void;
   resetGame: () => void;
   revealHint: (index: number) => void;
   generateHints: (count?: number) => void;
@@ -32,7 +33,7 @@ type GameActions = {
 const initState: GameState = {
   guessesMatrix: [],
   currentWord: [],
-  answerWord: "proof",
+  answerWord: null,
   hints: [],
   MAX_WORD_LENGTH: 5,
   MAX_TRYS: 6,
@@ -77,6 +78,7 @@ export const useGameStore = create<GameState & GameActions>((set) => ({
       addError("Слова нет в словаре");
       return;
     }
+    if(!answerWord) return;
 
     const states = checkWord(word, answerWord);
     const status: GameStatusType =
@@ -102,6 +104,7 @@ export const useGameStore = create<GameState & GameActions>((set) => ({
 
   generateHints: (count = 3) =>
     set((state) => {
+      if(!state.answerWord) return {hints:[]};
       const generatedHints: GameState["hints"] = [];
 
       for (let i = 0; i < count; i++) {
@@ -134,4 +137,5 @@ export const useGameStore = create<GameState & GameActions>((set) => ({
 
   setMatrix: (matrix) => set(() => ({ guessesMatrix: matrix })),
   setGameStatus: (status) => set(() => ({ gameStatus: status })),
+  setAnswerWord:(word)=>set(()=>({answerWord:word}))
 }));

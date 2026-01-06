@@ -19,15 +19,15 @@ import { ChevronLeft, ChevronRight, Lightbulb } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export default function HintModal() {
-  const { hints, revealHint, generateHints } = useGameStore();
+  const { hints, revealHint, generateHints, answerWord } = useGameStore();
   const hintsCount = hints.length;
   const [currentHintIndex, setCurrentHintIndex] = useState(0);
 
   useEffect(() => {
-    if (hintsCount) return;
+    if (hintsCount || !answerWord) return;
 
     generateHints();
-  }, []);
+  }, [answerWord]);
 
   if (!hintsCount) return null;
 
