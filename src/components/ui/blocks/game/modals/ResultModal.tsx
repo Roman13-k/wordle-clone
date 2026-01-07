@@ -12,6 +12,7 @@ import { useGameStore } from "@/stores/gameStore";
 import { useEffect, useState } from "react";
 import { RESULT_CONFIG } from "@/utils/data/resultСonfig";
 import { isResultStatus } from "@/utils/guards/isResultStatus";
+import BallEmitter from "@/components/ui/shared/animations/BallEmitter";
 
 export default function ResultModal() {
   const { answerWord, resetGame } = useGameStore();
@@ -35,7 +36,12 @@ export default function ResultModal() {
 
   return (
     <Dialog open={open} onOpenChange={() => resetGame()}>
-      <DialogContent>
+      <DialogContent
+        className={`border-b-4 ${
+          gameStatus == "win" ? "border-chart-1" : "border-destructive"
+        }`}
+      >
+        <BallEmitter color={gameStatus === "win" ? "green" : "red"} />
         <DialogHeader className="text-center">
           <div
             className={`mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full ${config.iconBg}`}
@@ -52,7 +58,7 @@ export default function ResultModal() {
 
         <div className="mt-4 flex justify-center">
           <div className="rounded-md border border-border bg-muted px-6 py-2 text-lg font-mono tracking-widest">
-            {answerWord.toUpperCase()}
+            {answerWord?.toUpperCase()}
           </div>
         </div>
 
