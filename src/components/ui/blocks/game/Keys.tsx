@@ -28,7 +28,7 @@ export default function Keys() {
         deleteLetter();
       }
     },
-    [addLetter, submitWord, deleteLetter]
+    [addLetter, submitWord, deleteLetter, isInputBlock]
   );
 
   useEffect(() => {

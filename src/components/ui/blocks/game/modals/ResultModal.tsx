@@ -13,12 +13,21 @@ import { useEffect, useState } from "react";
 import { RESULT_CONFIG } from "@/utils/data/resultСonfig";
 import { isResultStatus } from "@/utils/guards/isResultStatus";
 import BallEmitter from "@/components/ui/shared/animations/BallEmitter";
+import { useRouter } from "next/navigation";
+import { useAuthModal } from "@/stores/authStore";
 
 export default function ResultModal() {
   const { answerWord, resetGame } = useGameStore();
+  const { openModal } = useAuthModal();
+  const router = useRouter();
   const gameStatus = useGameStore((s) => s.gameStatus);
   const [open, setOpen] = useState(false);
   const isOpen = isResultStatus(gameStatus);
+
+  const handlePlayAgain = () => {
+    resetGame();
+    router.push("/calendar");
+  };
 
   useEffect(() => {
     if (!isOpen) {
@@ -67,8 +76,10 @@ export default function ResultModal() {
         </div>
 
         <DialogFooter className="mt-6 flex flex-col gap-2 sm:flex-col">
-          <Button className="w-full">Зарегистрироваться</Button>
-          <Button variant="ghost" className="w-full" onClick={resetGame}>
+          <Button onClick={openModal} className="w-full">
+            Зарегистрироваться
+          </Button>
+          <Button variant="ghost" className="w-full" onClick={handlePlayAgain}>
             Играть снова
           </Button>
         </DialogFooter>

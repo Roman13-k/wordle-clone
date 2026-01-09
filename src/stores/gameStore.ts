@@ -25,6 +25,7 @@ type GameActions = {
   setMatrix: (matrix: GameState["guessesMatrix"]) => void;
   setGameStatus: (status: GameState["gameStatus"]) => void;
   setAnswerWord:(word:GameState["answerWord"])=>void;
+  setInputBlock:(isBlock:boolean)=>void;
   resetGame: () => void;
   revealHint: (index: number) => void;
   generateHints: (count?: number) => void;
@@ -142,5 +143,6 @@ export const useGameStore = create<GameState & GameActions>((set) => ({
 
   setMatrix: (matrix) => set(() => ({ guessesMatrix: matrix })),
   setGameStatus: (status) => set(() => ({ gameStatus: status })),
-  setAnswerWord:(word)=>set(()=>({answerWord:word}))
+  setAnswerWord:(word)=>set(()=>({answerWord:word})),
+  setInputBlock:(isBlock)=>set(()=>({isInputBlock:isBlock}))
 }));
