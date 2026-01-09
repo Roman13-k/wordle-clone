@@ -1,10 +1,10 @@
-import React, { PropsWithChildren } from "react";
-import SnowFlakes from "../shared/animations/SnowFlakes";
+import { PropsWithChildren } from "react";
+import SeasonalParticles from "../shared/animations/SeasonalParticles";
 
 export default function MainContainer({ children }: PropsWithChildren) {
   return (
     <div className="h-screen w-full bg-muted relative overflow-hidden">
-      <SnowFlakes />
+      <SeasonalParticles />
       <div className="max-w-7xl mx-auto h-full relative"> {children}</div>
     </div>
   );
