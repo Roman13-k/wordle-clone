@@ -1,3 +1,4 @@
+"use client";
 import { Mail } from "lucide-react";
 import { Button } from "../../shared/button";
 import { GithubLogoIcon } from "@phosphor-icons/react";
@@ -9,9 +10,13 @@ import {
 } from "@/utils/validation/getPasswordStrength";
 import { passwordStrengthStyles } from "@/utils/data/passwordStrengthStyles";
 import { z } from "zod";
-import { useMemo } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { RegisterOrLogin } from "@/types/auth";
+import { useAuthByEmail } from "@/hooks/api/mutations/useAuthByEmail";
+import { registerOAuth } from "@/client/user/registerOAuth";
+import { useRouter } from "next/navigation";
 
 const schema = z.object({
   email: z.email(),
@@ -20,12 +25,36 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
-export function AuthForm({ type }: { type: "login" | "register" }) {
-  const { watch, register, handleSubmit } = useForm<FormData>({
+export function AuthForm({ type }: { type: RegisterOrLogin }) {
+  const { watch, register, handleSubmit, reset } = useForm<FormData>({
     resolver: zodResolver(schema),
     mode: "onSubmit",
   });
-  const onSubmit: SubmitHandler<FormData> = (data) => console.log(data);
+  const router = useRouter();
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const authMutation = useAuthByEmail();
+
+  const onSubmit = (data: FormData) => {
+    setSuccessMessage(null);
+    authMutation.mutate(
+      {
+        email: data.email.trim(),
+        password: data.password,
+        type,
+      },
+      {
+        onSuccess: () => {
+          setSuccessMessage(
+            type === "login" ? "Вход успешен!" : "Регистрация успешна!"
+          );
+          reset();
+          setTimeout(() => {
+            router.push("/profile");
+          }, 1000);
+        },
+      }
+    );
+  };
 
   const password = watch("password") ?? "";
   const strength = useMemo(() => getPasswordStrength(password), [password]);
@@ -72,9 +101,17 @@ export function AuthForm({ type }: { type: "login" | "register" }) {
           )}
         </div>
 
-        <Button className="w-full">
+        <Button isLoading={authMutation.isPending} className="w-full">
           {type === "login" ? "Войти" : "Зарегистрироваться"}
         </Button>
+        {authMutation.error && (
+          <p className="text-sm text-destructive mt-1">
+            {authMutation.error.message}
+          </p>
+        )}
+        {successMessage && (
+          <p className="text-sm text-success mt-1">{successMessage}</p>
+        )}
       </form>
 
       <div className="relative my-4">
@@ -87,12 +124,22 @@ export function AuthForm({ type }: { type: "login" | "register" }) {
       </div>
 
       <div className="space-y-2">
-        <Button variant="outline" className="w-full gap-2">
+        <Button
+          onClick={() => registerOAuth("google")}
+          type="button"
+          variant="outline"
+          className="w-full gap-2"
+        >
           <Mail className="h-4 w-4" />
           Google
         </Button>
 
-        <Button variant="outline" className="w-full gap-2">
+        <Button
+          onClick={() => registerOAuth("github")}
+          type="button"
+          variant="outline"
+          className="w-full gap-2"
+        >
           <GithubLogoIcon className="h-4 w-4" />
           GitHub
         </Button>
