@@ -4,6 +4,7 @@ import { Calendar } from "../../shared/calendar";
 import { format } from "date-fns";
 import { useRouter } from "next/navigation";
 import { useGameStore } from "@/stores/gameStore";
+import { ru } from "date-fns/locale";
 
 export default function CalendarPiker() {
   const router = useRouter();
@@ -28,7 +29,11 @@ export default function CalendarPiker() {
       mode="single"
       selected={date}
       onSelect={handleSelect}
-      disabled={(date) => date > new Date() || date < new Date(FIRST_WORD_DATE)}
+      locale={ru}
+      disabled={(d) =>
+        d.setHours(0, 0, 0, 0) > new Date().setHours(0, 0, 0, 0) ||
+        d.setHours(0, 0, 0, 0) < new Date(FIRST_WORD_DATE).setHours(0, 0, 0, 0)
+      }
       className="rounded-md border"
       classNames={{
         day_selected: "bg-primary text-primary-foreground hover:bg-primary/90",

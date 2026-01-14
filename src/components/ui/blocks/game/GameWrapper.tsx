@@ -1,17 +1,36 @@
 "use client";
-import { useTodayWord } from "@/hooks/api/queries/useWordByDate";
-import { useGameStore } from "@/stores/gameStore";
+
 import { PropsWithChildren, useEffect } from "react";
-import { Spinner } from "../../shared/spinner";
 import { useToastStore } from "@/stores/toastStore";
+import { useGameStore } from "@/stores/gameStore";
+import { Spinner } from "../../shared/spinner";
 import ErrorComponent from "../../shared/error-component";
+
+type WordHookResult = {
+  data?: { word: string };
+  isLoading: boolean;
+  isError: boolean;
+  refetch: () => void;
+  errorUpdateCount?: number;
+};
+
+type GameWrapperProps = PropsWithChildren<{
+  className?: string;
+  useWordHook: () => WordHookResult;
+}>;
 
 export default function GameWrapper({
   children,
   className,
-}: PropsWithChildren<{ className?: string }>) {
-  const { data, isLoading, isError, errorUpdateCount, refetch } =
-    useTodayWord();
+  useWordHook,
+}: GameWrapperProps) {
+  const {
+    data,
+    isLoading,
+    isError,
+    refetch,
+    errorUpdateCount = 0,
+  } = useWordHook();
   const setAnswerWord = useGameStore((s) => s.setAnswerWord);
   const addToast = useToastStore((s) => s.addToast);
 
@@ -23,6 +42,7 @@ export default function GameWrapper({
         "error"
       );
     }
+
     if (data?.word) {
       setAnswerWord(data.word);
     }
