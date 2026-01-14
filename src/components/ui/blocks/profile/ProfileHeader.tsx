@@ -6,6 +6,7 @@ import { Flame, Mail, User } from "lucide-react";
 import { useGetUser } from "@/hooks/api/queries/useGetUser";
 import ProfileEditModal from "./ProfileEditModal";
 import ProfileDeleteModal from "./ProfileDeleteModal";
+import UserAvatar from "./UserAvatar";
 
 export default function ProfileHeader() {
   const { data: user } = useGetUser();
@@ -16,13 +17,7 @@ export default function ProfileHeader() {
     <Card>
       <CardContent className="flex flex-wrap items-center justify-between gap-6">
         <div className="flex items-center gap-4">
-          <Avatar className="h-16 w-16">
-            <AvatarImage src={user.cover} />
-            <AvatarFallback>
-              <User className="h-6 w-6" />
-            </AvatarFallback>
-          </Avatar>
-
+          <UserAvatar className="h-16 w-16" size={32} cover={user.cover} />
           <div>
             <h1 className="text-xl font-semibold">{user.name}</h1>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">

@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/shared/alert-dialog";
 import { Button } from "@/components/ui/shared/button";
 import { useDeleteUser } from "@/hooks/api/mutations/useDeleteUser";
+import { useGetUser } from "@/hooks/api/queries/useGetUser";
 import { useToastStore } from "@/stores/toastStore";
 import { Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -22,6 +23,7 @@ export default function ProfileDeleteModal({ id }: { id: string }) {
   const { mutate, isPending, isError, isSuccess } = useDeleteUser(id);
   const { addToast } = useToastStore();
   const router = useRouter();
+  const { refetch } = useGetUser();
 
   useEffect(() => {
     if (isError) {
@@ -33,6 +35,7 @@ export default function ProfileDeleteModal({ id }: { id: string }) {
     } else if (isSuccess) {
       addToast("Готово", "Профиль успешно удалён.", "success");
       router.push("/");
+      refetch();
     }
   }, [isError, isSuccess, addToast]);
 

@@ -1,12 +1,16 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Dialog,
   DialogTrigger,
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogClose,
 } from "@/components/ui/shared/dialog";
 import { Input } from "@/components/ui/shared/input";
 import { Textarea } from "@/components/ui/shared/textarea";
@@ -17,37 +21,86 @@ import {
   TabsTrigger,
   TabsContent,
 } from "@/components/ui/shared/tabs";
-import { Pencil, User, Upload, Image } from "lucide-react";
+import { Pencil, Upload, Image } from "lucide-react";
+
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from "../../shared/form";
+import { profileUpdateSchema } from "@/utils/validation/profileUpdateSchema";
+import UserAvatar from "./UserAvatar";
+import { useUpdateUser } from "@/hooks/api/mutations/useUpdateUser";
+import { useToastStore } from "@/stores/toastStore";
+import { useGetUser } from "@/hooks/api/queries/useGetUser";
 
-type ProfileFormValues = {
-  name: string;
-  description: string;
-  avatarFile?: FileList;
-  avatarPreset?: string;
-};
+type ProfileFormValues = z.infer<typeof profileUpdateSchema>;
 
 export default function ProfileEditModal() {
+  const { data: user } = useGetUser();
+  const { mutate, isPending, isError, isSuccess } = useUpdateUser();
+  const { addToast } = useToastStore();
+  const [preview, setPreview] = useState<string | undefined>();
+
   const form = useForm<ProfileFormValues>({
+    resolver: zodResolver(profileUpdateSchema),
     defaultValues: {
       name: "",
       description: "",
     },
   });
 
-  const onSubmit = (values: ProfileFormValues) => {
-    console.log(values);
+  const { handleSubmit, control, watch, setValue, formState } = form;
+  const values = watch();
+
+  const onSubmit = (data: ProfileFormValues) => {
+    if (!user) return;
+
+    mutate({
+      data: {
+        name: data.name,
+        description: data.description,
+        cover: preview,
+      },
+      id: user.id,
+    });
   };
+
+  useEffect(() => {
+    if (isError) {
+      addToast(
+        "Ошибка",
+        "Не удалось применить изменения. Попробуйте позже.",
+        "error"
+      );
+    } else if (isSuccess) {
+      addToast("Готово", "Профиль успешно изменён.", "success");
+    }
+  }, [isError, isSuccess, addToast]);
+
+  useEffect(() => {
+    const fileList = values.avatarFile;
+    if (fileList && fileList.length > 0) {
+      const file = fileList[0];
+      const reader = new FileReader();
+      reader.onload = () => setPreview(reader.result as string);
+      reader.readAsDataURL(file);
+    } else {
+      setPreview(undefined);
+    }
+  }, [values.avatarFile]);
+
+  const isDisabled =
+    !values.name &&
+    !values.description &&
+    (!values.avatarFile || values.avatarFile.length === 0) &&
+    !values.avatarPreset;
 
   return (
     <Dialog>
-      {/* Trigger */}
       <DialogTrigger asChild>
         <Button
           aria-label="Редактировать профиль"
@@ -65,30 +118,25 @@ export default function ProfileEditModal() {
 
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(onSubmit)}
+            onSubmit={handleSubmit(onSubmit)}
             className="flex flex-col gap-6"
           >
-            {/* Avatar */}
             <div className="flex gap-4 items-start">
-              <div className="size-20 rounded-full border flex items-center justify-center">
-                <User className="size-10 text-muted-foreground" />
-              </div>
+              <UserAvatar cover={preview} size={32} className="h-16 w-16" />
 
               <Tabs defaultValue="upload" className="flex-1">
                 <TabsList>
                   <TabsTrigger value="upload">
-                    <Upload className="size-4 mr-2" />
-                    Загрузить
+                    <Upload className="size-4 mr-2" /> Загрузить
                   </TabsTrigger>
                   <TabsTrigger value="preset">
-                    <Image className="size-4 mr-2" />
-                    Выбрать
+                    <Image className="size-4 mr-2" /> Выбрать
                   </TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="upload" className="mt-3">
                   <FormField
-                    control={form.control}
+                    control={control}
                     name="avatarFile"
                     render={({ field }) => (
                       <FormItem>
@@ -99,6 +147,9 @@ export default function ProfileEditModal() {
                             onChange={(e) => field.onChange(e.target.files)}
                           />
                         </FormControl>
+                        <FormMessage>
+                          {formState.errors.avatarFile?.message?.toString()}
+                        </FormMessage>
                       </FormItem>
                     )}
                   />
@@ -111,9 +162,7 @@ export default function ProfileEditModal() {
                         key={i}
                         type="button"
                         className="aspect-square rounded-full border hover:ring-2"
-                        onClick={() =>
-                          form.setValue("avatarPreset", `preset-${i}`)
-                        }
+                        onClick={() => setValue("avatarPreset", `preset-${i}`)}
                       />
                     ))}
                   </div>
@@ -121,25 +170,24 @@ export default function ProfileEditModal() {
               </Tabs>
             </div>
 
-            {/* Name */}
             <FormField
-              control={form.control}
+              control={control}
               name="name"
-              render={({ field }) => (
+              render={({ field }: any) => (
                 <FormItem>
                   <FormLabel>Имя</FormLabel>
                   <FormControl>
                     <Input placeholder="Ваше имя" {...field} />
                   </FormControl>
+                  <FormMessage>{formState.errors.name?.message}</FormMessage>
                 </FormItem>
               )}
             />
 
-            {/* Description */}
             <FormField
-              control={form.control}
+              control={control}
               name="description"
-              render={({ field }) => (
+              render={({ field }: any) => (
                 <FormItem>
                   <FormLabel>Описание</FormLabel>
                   <FormControl>
@@ -149,16 +197,23 @@ export default function ProfileEditModal() {
                       {...field}
                     />
                   </FormControl>
+                  <FormMessage>
+                    {formState.errors.description?.message}
+                  </FormMessage>
                 </FormItem>
               )}
             />
 
-            {/* Actions */}
             <div className="flex justify-end gap-2 pt-2">
-              <Button type="button" variant="ghost">
-                Отмена
+              <DialogClose asChild>
+                <Button type="button" variant="ghost">
+                  Отмена
+                </Button>
+              </DialogClose>
+
+              <Button isLoading={isPending} type="submit" disabled={isDisabled}>
+                Сохранить
               </Button>
-              <Button type="submit">Сохранить</Button>
             </div>
           </form>
         </Form>
