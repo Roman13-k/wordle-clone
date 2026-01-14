@@ -1,4 +1,4 @@
-import { publicEnv } from "@/utils/env";
+import { publicEnv, serverEnv } from "@/utils/env";
 import { createClient } from "@supabase/supabase-js";
 
 const {SUPABASE_ANON_KEY,SUPABASE_URL}=publicEnv;

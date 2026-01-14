@@ -12,7 +12,7 @@
   },
   "iconLibrary": "phosphor",
   "aliases": {
-    "components": "@/components/ui/shared",
+    "components": "@/components/ui",
     "utils": "@/lib/utils",
     "lib": "@/lib",
     "hooks": "@/hooks"

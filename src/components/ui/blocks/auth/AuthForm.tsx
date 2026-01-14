@@ -17,6 +17,7 @@ import { RegisterOrLogin } from "@/types/auth";
 import { useAuthByEmail } from "@/hooks/api/mutations/useAuthByEmail";
 import { registerOAuth } from "@/client/user/registerOAuth";
 import { useRouter } from "next/navigation";
+import { useAuthModal } from "@/stores/authStore";
 
 const schema = z.object({
   email: z.email(),
@@ -33,6 +34,7 @@ export function AuthForm({ type }: { type: RegisterOrLogin }) {
   const router = useRouter();
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const authMutation = useAuthByEmail();
+  const { closeModal } = useAuthModal();
 
   const onSubmit = (data: FormData) => {
     setSuccessMessage(null);
@@ -48,6 +50,7 @@ export function AuthForm({ type }: { type: RegisterOrLogin }) {
             type === "login" ? "Вход успешен!" : "Регистрация успешна!"
           );
           reset();
+          closeModal();
           setTimeout(() => {
             router.push("/profile");
           }, 1000);

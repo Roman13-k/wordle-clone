@@ -5,7 +5,7 @@ export function checkWord(guess: string, answerWord: string): LetterState[] {
   const answerArr = answerWord.split("");
 
   for (let i = 0; i < guess.length; i++) {
-    if (guess[i].toLowerCase() === answerArr[i]) {
+    if (guess[i].toLowerCase() === answerArr[i].toLowerCase()) {
       result[i] = "correct";
       answerArr[i] = "";
     }
@@ -14,10 +14,12 @@ export function checkWord(guess: string, answerWord: string): LetterState[] {
   for (let i = 0; i < guess.length; i++) {
     if (result[i] === "correct") continue;
 
-    const idx = answerArr.indexOf(guess[i]);
-    if (idx != -1) {
+    const idx = answerArr.findIndex(
+      (l) => l.toLowerCase() === guess[i].toLowerCase()
+    );
+    if (idx !== -1) {
       result[i] = "present";
-      answerArr[i] = "";
+      answerArr[idx] = "";
     }
   }
 
