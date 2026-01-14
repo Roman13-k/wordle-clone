@@ -12,6 +12,7 @@ type GameState = {
   hints: { text: string; revealed: boolean,variant:HintsVariantsType }[];
   MAX_WORD_LENGTH: 5;
   MAX_TRYS: 6;
+  FIRST_WORD_DATE:"2026-01-05";
   gameStatus: GameStatusType;
   error: string | null;
   isInputBlock: boolean;
@@ -38,6 +39,7 @@ const initState: GameState = {
   hints: [],
   MAX_WORD_LENGTH: 5,
   MAX_TRYS: 6,
+  FIRST_WORD_DATE:"2026-01-05",
   error: null,
   gameStatus: "playing",
   isInputBlock: false,
