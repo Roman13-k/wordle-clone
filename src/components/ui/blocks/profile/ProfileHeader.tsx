@@ -22,8 +22,6 @@ export default function ProfileHeader() {
   const handleLogout = async () => {
     await supabase.auth.signOut();
     router.push("/");
-    router.refresh();
-    refetch();
   };
 
   return (

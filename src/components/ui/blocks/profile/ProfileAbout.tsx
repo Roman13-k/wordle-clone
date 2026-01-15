@@ -17,7 +17,7 @@ export default function ProfileAbout() {
       <CardHeader>
         <CardTitle>Обо мне</CardTitle>
         <CardDescription>
-          {user.description == ""
+          {!user.description
             ? "Вы ничего о себе не написали :("
             : user.description}
         </CardDescription>

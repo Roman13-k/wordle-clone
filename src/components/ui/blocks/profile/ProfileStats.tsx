@@ -8,11 +8,12 @@ import {
 } from "../../shared/card";
 import { BookOpen, Trophy, Users } from "lucide-react";
 import { useGetUser } from "@/hooks/api/queries/useGetUser";
+import { useGetUserStats } from "@/hooks/api/queries/useGetUserStats";
 
 export default function ProfileStats() {
   const { data: user } = useGetUser();
-
-  if (!user) return;
+  const { data: userStats } = useGetUserStats(user?.id);
+  if (!user || !userStats) return;
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -25,9 +26,7 @@ export default function ProfileStats() {
           <CardDescription>Всего выигранных игр</CardDescription>
         </CardHeader>
         <CardContent>
-          <span className="text-2xl font-bold">
-            {user?.statistics?.wins ?? 0}
-          </span>
+          <span className="text-2xl font-bold">{userStats?.wins}</span>
         </CardContent>
       </Card>
 
@@ -40,9 +39,7 @@ export default function ProfileStats() {
           <CardDescription>Сыграно слов</CardDescription>
         </CardHeader>
         <CardContent>
-          <span className="text-2xl font-bold">
-            {user?.statistics?.plays ?? 0}
-          </span>
+          <span className="text-2xl font-bold">{userStats?.plays}</span>
         </CardContent>
       </Card>
 
@@ -55,9 +52,7 @@ export default function ProfileStats() {
           <CardDescription>Добавленные друзья</CardDescription>
         </CardHeader>
         <CardContent>
-          <span className="text-2xl font-bold">
-            {user?.statistics?.friendsCount ?? 0}
-          </span>
+          <span className="text-2xl font-bold">{userStats?.friends_count}</span>
         </CardContent>
       </Card>
     </div>
