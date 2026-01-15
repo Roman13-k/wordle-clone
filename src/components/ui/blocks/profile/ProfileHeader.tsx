@@ -1,16 +1,30 @@
 "use client";
+
 import { Card, CardContent } from "../../shared/card";
-import { Mail } from "lucide-react";
+import { Mail, LogOut } from "lucide-react";
+import { useRouter } from "next/navigation";
+
 import { useGetUser } from "@/hooks/api/queries/useGetUser";
+import { supabase } from "@/lib/supabaseClient";
+
 import ProfileEditModal from "./ProfileEditModal";
 import ProfileDeleteModal from "./ProfileDeleteModal";
 import UserAvatar from "./UserAvatar";
 import Streak from "./Streak";
+import { Button } from "../../shared/button";
 
 export default function ProfileHeader() {
-  const { data: user } = useGetUser();
+  const { data: user, refetch } = useGetUser();
+  const router = useRouter();
 
   if (!user) return null;
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.push("/");
+    router.refresh();
+    refetch();
+  };
 
   return (
     <Card>
@@ -26,7 +40,7 @@ export default function ProfileHeader() {
           </div>
         </div>
 
-        <div className="flex items-center gap-6">
+        <div className="flex flex-wrap items-center gap-6">
           <div className="flex items-center gap-2">
             <Streak
               last_played_date={user.last_played_date}
@@ -35,9 +49,18 @@ export default function ProfileHeader() {
             <span className="text-sm text-muted-foreground">дней подряд</span>
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex items-center gap-2">
             <ProfileEditModal />
             <ProfileDeleteModal id={user.id} />
+
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={handleLogout}
+              title="Выйти из аккаунта"
+            >
+              <LogOut className="h-4 w-4" />
+            </Button>
           </div>
         </div>
       </CardContent>

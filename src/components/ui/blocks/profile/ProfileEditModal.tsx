@@ -108,6 +108,7 @@ export default function ProfileEditModal() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button
+          title="Редактировать профиль"
           aria-label="Редактировать профиль"
           variant="outline"
           size="icon"

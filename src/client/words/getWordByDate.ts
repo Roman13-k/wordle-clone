@@ -1,48 +1,55 @@
 import { AlreadyPlayedI, DailyWordI } from "@/interfaces/game";
 import { supabase } from "@/lib/supabaseClient";
 
-type WordSBType={
-    id: string;
-    date: string;
-    en_words: {
-        word: string;
-    };
-}
+type WordSBType = {
+  id: string;
+  date: string;
+  en_words: {
+    word: string;
+  };
+};
 
-export async function getWordByDate(date: Date, user_id?:string):Promise<DailyWordI|AlreadyPlayedI> {
+export async function getWordByDate(
+  date: Date,
+  user_id?: string
+): Promise<DailyWordI | AlreadyPlayedI> {
   const isoDate = date.toISOString().split("T")[0];
 
-const { data: userGame, error: userError } = await supabase
-  .from("user_games")
-  .select("id, is_win")
-  .eq("user_id", user_id ?? "")
-  .eq("game_date", isoDate)
-  .maybeSingle();
+  if (user_id) {
+    const { data: userGame, error: userError } = await supabase
+      .from("user_games")
+      .select("id, is_win")
+      .eq("user_id", user_id)
+      .eq("game_date", isoDate)
+      .maybeSingle();
 
-  if(userError) throw userError;
+    if (userError) throw userError;
 
-  if (userGame) {
-  return {
-    alreadyPlayed: true,
-    isWin: userGame.is_win,
+    if (userGame) {
+      return {
+        alreadyPlayed: true,
+        isWin: userGame.is_win,
+      };
+    }
   }
-}
 
   const { data, error } = await supabase
     .from("daily_words")
-    .select(`
+    .select(
+      `
             id,
             date,
              en_words (
              word
     )
-            `)
+            `
+    )
     .eq("date", isoDate)
-    .single<WordSBType>()
+    .single<WordSBType>();
 
   if (error) {
     throw error;
   }
 
-  return {id:data.id,date:data.date,word:data.en_words.word};
+  return { id: data.id, date: data.date, word: data.en_words.word };
 }
