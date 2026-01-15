@@ -1,0 +1,1 @@
+export const presetImages:string[]=Array.from({length:10},(_,i)=>`/icons/profile-${i+1}.svg`)

@@ -5,9 +5,12 @@ import { useToastStore } from "@/stores/toastStore";
 import { useGameStore } from "@/stores/gameStore";
 import { Spinner } from "../../shared/spinner";
 import ErrorComponent from "../../shared/error-component";
+import { DailyWordI } from "@/interfaces/game";
+import { usePostGameResult } from "@/hooks/api/mutations/usePostGameResult";
+import { useGetUser } from "@/hooks/api/queries/useGetUser";
 
 type WordHookResult = {
-  data?: { word: string };
+  data?: DailyWordI;
   isLoading: boolean;
   isError: boolean;
   refetch: () => void;
@@ -31,8 +34,24 @@ export default function GameWrapper({
     refetch,
     errorUpdateCount = 0,
   } = useWordHook();
+  const { mutate } = usePostGameResult();
+  const { data: user } = useGetUser();
   const setAnswerWord = useGameStore((s) => s.setAnswerWord);
+  const gameStatus = useGameStore((s) => s.gameStatus);
   const addToast = useToastStore((s) => s.addToast);
+
+  useEffect(() => {
+    if (!data || !user) return;
+
+    if (gameStatus === "win" || gameStatus === "lose") {
+      mutate({
+        is_win: gameStatus === "win",
+        game_date: data.date,
+        user_id: user.id,
+        game_id: data.id,
+      });
+    }
+  }, [gameStatus]);
 
   useEffect(() => {
     if (isError) {

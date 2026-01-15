@@ -1,12 +1,11 @@
 "use client";
-
 import { Card, CardContent } from "../../shared/card";
-import { Avatar, AvatarFallback, AvatarImage } from "../../shared/avatar";
-import { Flame, Mail, User } from "lucide-react";
+import { Mail } from "lucide-react";
 import { useGetUser } from "@/hooks/api/queries/useGetUser";
 import ProfileEditModal from "./ProfileEditModal";
 import ProfileDeleteModal from "./ProfileDeleteModal";
 import UserAvatar from "./UserAvatar";
+import Streak from "./Streak";
 
 export default function ProfileHeader() {
   const { data: user } = useGetUser();
@@ -29,8 +28,10 @@ export default function ProfileHeader() {
 
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-2">
-            <Flame className="h-6 w-6 text-orange-500" />
-            <span className="text-lg font-bold">{user.streak_date ?? 0}</span>
+            <Streak
+              last_played_date={user.last_played_date}
+              current_streak={user.current_streak}
+            />
             <span className="text-sm text-muted-foreground">дней подряд</span>
           </div>
 

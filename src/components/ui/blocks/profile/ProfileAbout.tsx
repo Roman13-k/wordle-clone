@@ -2,7 +2,6 @@
 import { useGetUser } from "@/hooks/api/queries/useGetUser";
 import {
   Card,
-  CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
@@ -18,12 +17,11 @@ export default function ProfileAbout() {
       <CardHeader>
         <CardTitle>Обо мне</CardTitle>
         <CardDescription>
-          {user.description ?? "Вы ничего о себе не написали("}
+          {user.description == ""
+            ? "Вы ничего о себе не написали :("
+            : user.description}
         </CardDescription>
       </CardHeader>
-      <CardContent className="text-sm text-muted-foreground">
-        Здесь позже можно добавить описание профиля, любимые слова и т.д.
-      </CardContent>
     </Card>
   );
 }

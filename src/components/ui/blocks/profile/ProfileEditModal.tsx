@@ -22,7 +22,7 @@ import {
   TabsContent,
 } from "@/components/ui/shared/tabs";
 import { Pencil, Upload, Image } from "lucide-react";
-
+import NextImage from "next/image";
 import {
   Form,
   FormControl,
@@ -36,6 +36,7 @@ import UserAvatar from "./UserAvatar";
 import { useUpdateUser } from "@/hooks/api/mutations/useUpdateUser";
 import { useToastStore } from "@/stores/toastStore";
 import { useGetUser } from "@/hooks/api/queries/useGetUser";
+import { presetImages } from "@/utils/data/presetImagesConfig";
 
 type ProfileFormValues = z.infer<typeof profileUpdateSchema>;
 
@@ -43,13 +44,14 @@ export default function ProfileEditModal() {
   const { data: user } = useGetUser();
   const { mutate, isPending, isError, isSuccess } = useUpdateUser();
   const { addToast } = useToastStore();
-  const [preview, setPreview] = useState<string | undefined>();
+  const [preview, setPreview] = useState<string | undefined>(user?.cover);
+  const [open, setOpen] = useState(false);
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileUpdateSchema),
     defaultValues: {
-      name: "",
-      description: "",
+      name: user?.name,
+      description: user?.description,
     },
   });
 
@@ -77,6 +79,7 @@ export default function ProfileEditModal() {
         "error"
       );
     } else if (isSuccess) {
+      setOpen(false);
       addToast("Готово", "Профиль успешно изменён.", "success");
     }
   }, [isError, isSuccess, addToast]);
@@ -88,10 +91,12 @@ export default function ProfileEditModal() {
       const reader = new FileReader();
       reader.onload = () => setPreview(reader.result as string);
       reader.readAsDataURL(file);
-    } else {
+    } else if (values.avatarPreset) {
+      setPreview(values.avatarPreset);
+    } else if (!user?.cover) {
       setPreview(undefined);
     }
-  }, [values.avatarFile]);
+  }, [values.avatarFile, values.avatarPreset]);
 
   const isDisabled =
     !values.name &&
@@ -100,7 +105,7 @@ export default function ProfileEditModal() {
     !values.avatarPreset;
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button
           aria-label="Редактировать профиль"
@@ -157,13 +162,21 @@ export default function ProfileEditModal() {
 
                 <TabsContent value="preset" className="mt-3">
                   <div className="grid grid-cols-5 gap-2">
-                    {Array.from({ length: 10 }).map((_, i) => (
+                    {presetImages.map((img, i) => (
                       <button
                         key={i}
                         type="button"
-                        className="aspect-square rounded-full border hover:ring-2"
-                        onClick={() => setValue("avatarPreset", `preset-${i}`)}
-                      />
+                        className="aspect-square rounded-full border hover:ring-2 transition-all"
+                        onClick={() => setValue("avatarPreset", img)}
+                      >
+                        <NextImage
+                          src={img}
+                          alt={img}
+                          width={40}
+                          height={40}
+                          className="object-cover h-full w-full"
+                        />
+                      </button>
                     ))}
                   </div>
                 </TabsContent>

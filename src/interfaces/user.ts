@@ -4,7 +4,8 @@ export interface UserI {
     email:string;
     cover?:string;
     description?:string;
-    streak_date?:string;
+    current_streak:number,
+    last_played_date:string,
     created_at:Date;
     statistics:UserStatisticsI;
 }
