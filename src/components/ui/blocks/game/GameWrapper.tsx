@@ -5,12 +5,14 @@ import { useToastStore } from "@/stores/toastStore";
 import { useGameStore } from "@/stores/gameStore";
 import { Spinner } from "../../shared/spinner";
 import ErrorComponent from "../../shared/error-component";
-import { DailyWordI } from "@/interfaces/game";
+import { AlreadyPlayedI, DailyWordI } from "@/interfaces/game";
 import { usePostGameResult } from "@/hooks/api/mutations/usePostGameResult";
 import { useGetUser } from "@/hooks/api/queries/useGetUser";
+import { isAlreadyPlayed } from "@/utils/guards/isAlreadyPlayed";
+import AlreadyPlayedCard from "./AlreadyPlayedCard";
 
 type WordHookResult = {
-  data?: DailyWordI;
+  data?: DailyWordI | AlreadyPlayedI;
   isLoading: boolean;
   isError: boolean;
   refetch: () => void;
@@ -41,7 +43,7 @@ export default function GameWrapper({
   const addToast = useToastStore((s) => s.addToast);
 
   useEffect(() => {
-    if (!data || !user) return;
+    if (!data || !user || isAlreadyPlayed(data)) return;
 
     if (gameStatus === "win" || gameStatus === "lose") {
       mutate({
@@ -50,6 +52,9 @@ export default function GameWrapper({
         user_id: user.id,
         game_id: data.id,
       });
+    }
+    if (gameStatus === "playing") {
+      refetch();
     }
   }, [gameStatus]);
 
@@ -62,7 +67,7 @@ export default function GameWrapper({
       );
     }
 
-    if (data?.word) {
+    if (data && !isAlreadyPlayed(data) && data?.word) {
       setAnswerWord(data.word);
     }
   }, [data, isError]);
@@ -80,6 +85,14 @@ export default function GameWrapper({
         <ErrorComponent isLoading={isLoading} onRetry={() => refetch()} />
       </div>
     );
+
+  if (isAlreadyPlayed(data)) {
+    return (
+      <div className={className}>
+        <AlreadyPlayedCard isWin={data.isWin} />
+      </div>
+    );
+  }
 
   return <div className={className}>{children}</div>;
 }

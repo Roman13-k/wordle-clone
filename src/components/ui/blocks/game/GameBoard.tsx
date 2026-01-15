@@ -6,6 +6,7 @@ import GameWrapper from "./GameWrapper";
 import { useTodayWord, useWordByDate } from "@/hooks/api/queries/useWordByDate";
 import ResultModal from "./modals/ResultModal";
 import ConfirmModal from "./modals/ConfirmModal";
+import { useGetUser } from "@/hooks/api/queries/useGetUser";
 
 interface GameBoardProps {
   className?: string;
@@ -13,7 +14,10 @@ interface GameBoardProps {
 }
 
 export function GameBoard({ className, date }: GameBoardProps) {
-  const useWordHook = date ? () => useWordByDate(date) : useTodayWord;
+  const { data: user } = useGetUser();
+  const useWordHook = date
+    ? () => useWordByDate(date, user?.id)
+    : () => useTodayWord(user?.id);
 
   return (
     <>

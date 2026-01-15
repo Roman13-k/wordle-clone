@@ -15,8 +15,10 @@ import { isResultStatus } from "@/utils/guards/isResultStatus";
 import BallEmitter from "@/components/ui/shared/animations/BallEmitter";
 import { useRouter } from "next/navigation";
 import { useAuthModal } from "@/stores/authStore";
+import { useGetUser } from "@/hooks/api/queries/useGetUser";
 
 export default function ResultModal() {
+  const { data: user } = useGetUser();
   const { answerWord, resetGame } = useGameStore();
   const { openModal } = useAuthModal();
   const router = useRouter();
@@ -76,9 +78,11 @@ export default function ResultModal() {
         </div>
 
         <DialogFooter className="mt-6 flex flex-col gap-2 sm:flex-col">
-          <Button onClick={openModal} className="w-full">
-            Зарегистрироваться
-          </Button>
+          {!user && (
+            <Button onClick={openModal} className="w-full">
+              Зарегистрироваться
+            </Button>
+          )}
           <Button variant="ghost" className="w-full" onClick={handlePlayAgain}>
             Играть снова
           </Button>

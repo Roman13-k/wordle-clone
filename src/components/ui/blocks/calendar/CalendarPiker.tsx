@@ -5,6 +5,7 @@ import { format } from "date-fns";
 import { useRouter } from "next/navigation";
 import { useGameStore } from "@/stores/gameStore";
 import { ru } from "date-fns/locale";
+import { getUTCToday } from "@/utils/functions/getUTCToday";
 
 export default function CalendarPiker() {
   const router = useRouter();
@@ -19,11 +20,10 @@ export default function CalendarPiker() {
     const utcDate = new Date(
       Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())
     );
-
     const formatted = format(utcDate, "yyyy-MM-dd");
-
     router.push(`/game?date=${formatted}`);
   };
+
   return (
     <Calendar
       mode="single"
@@ -31,7 +31,7 @@ export default function CalendarPiker() {
       onSelect={handleSelect}
       locale={ru}
       disabled={(d) =>
-        d.setHours(0, 0, 0, 0) > new Date().setHours(0, 0, 0, 0) ||
+        d.setHours(0, 0, 0, 0) > getUTCToday().setHours(0, 0, 0, 0) ||
         d.setHours(0, 0, 0, 0) < new Date(FIRST_WORD_DATE).setHours(0, 0, 0, 0)
       }
       className="rounded-md border"

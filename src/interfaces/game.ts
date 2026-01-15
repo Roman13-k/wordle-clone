@@ -8,3 +8,8 @@ export interface DailyWordI {
   date:string;
   word:string;
 }
+
+export interface AlreadyPlayedI{
+  alreadyPlayed: boolean;
+  isWin:boolean;
+}

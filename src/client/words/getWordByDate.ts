@@ -1,4 +1,4 @@
-import { DailyWordI } from "@/interfaces/game";
+import { AlreadyPlayedI, DailyWordI } from "@/interfaces/game";
 import { supabase } from "@/lib/supabaseClient";
 
 type WordSBType={
@@ -9,8 +9,24 @@ type WordSBType={
     };
 }
 
-export async function getWordByDate(date: Date):Promise<DailyWordI> {
+export async function getWordByDate(date: Date, user_id?:string):Promise<DailyWordI|AlreadyPlayedI> {
   const isoDate = date.toISOString().split("T")[0];
+
+const { data: userGame, error: userError } = await supabase
+  .from("user_games")
+  .select("id, is_win")
+  .eq("user_id", user_id ?? "")
+  .eq("game_date", isoDate)
+  .maybeSingle();
+
+  if(userError) throw userError;
+
+  if (userGame) {
+  return {
+    alreadyPlayed: true,
+    isWin: userGame.is_win,
+  }
+}
 
   const { data, error } = await supabase
     .from("daily_words")
