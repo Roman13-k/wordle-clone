@@ -4,12 +4,13 @@ export interface KeysI {
 }
 
 export interface DailyWordI {
-  id:string;
-  date:string;
-  word:string;
+  id: string;
+  date: string;
+  word: string;
 }
 
-export interface AlreadyPlayedI{
+export interface AlreadyPlayedI {
   alreadyPlayed: boolean;
-  isWin:boolean;
+  is_win: boolean;
+  game_date: string;
 }

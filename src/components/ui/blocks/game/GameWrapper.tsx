@@ -89,7 +89,7 @@ export default function GameWrapper({
   if (isAlreadyPlayed(data)) {
     return (
       <div className={className}>
-        <AlreadyPlayedCard isWin={data.isWin} />
+        <AlreadyPlayedCard isWin={data.is_win} />
       </div>
     );
   }

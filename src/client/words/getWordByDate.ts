@@ -28,7 +28,8 @@ export async function getWordByDate(
     if (userGame) {
       return {
         alreadyPlayed: true,
-        isWin: userGame.is_win,
+        is_win: userGame.is_win,
+        game_date: isoDate,
       };
     }
   }

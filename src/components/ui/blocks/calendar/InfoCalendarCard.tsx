@@ -21,18 +21,18 @@ export default function InfoCalendarCard() {
             <CalendarPiker />
             <div className="space-y-2 text-sm">
               <div className="flex items-center gap-2">
-                <span className="h-3 w-3 rounded-full bg-primary" />
-                <span>Выбранная дата</span>
+                <span className="h-3 w-3 rounded-md bg-primary/80" />
+                <span>Победа</span>
               </div>
 
               <div className="flex items-center gap-2">
-                <span className="h-3 w-3 rounded-full border border-primary" />
-                <span>Сегодняшний день</span>
+                <span className="h-3 w-3 rounded-md bg-destructive" />
+                <span>Поражение</span>
               </div>
 
               <div className="flex items-center gap-2">
-                <span className="h-3 w-3 rounded-full bg-muted-foreground/40" />
-                <span>Недоступные даты (будущее)</span>
+                <span className="h-3 w-3 rounded-md bg-muted-foreground/40" />
+                <span>Недоступные даты</span>
               </div>
             </div>
           </div>
