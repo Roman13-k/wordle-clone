@@ -1,14 +1,24 @@
 "use client";
+
 import { Mail } from "lucide-react";
-import { Button } from "../../shared/button";
 import { GithubLogoIcon } from "@phosphor-icons/react";
+import { Button } from "../../shared/button";
 import { Input } from "@/components/ui/shared/input";
-import { Label } from "@/components/ui/shared/label";
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from "@/components/ui/shared/form";
+
 import {
   getPasswordStrength,
   passwordSchema,
 } from "@/utils/validation/getPasswordStrength";
 import { passwordStrengthStyles } from "@/utils/data/passwordStrengthStyles";
+
 import { z } from "zod";
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -20,24 +30,30 @@ import { useRouter } from "next/navigation";
 import { useAuthModal } from "@/stores/authStore";
 
 const schema = z.object({
-  email: z.email(),
+  email: z.string().email("Некорректный email"),
   password: passwordSchema,
 });
 
 type FormData = z.infer<typeof schema>;
 
 export function AuthForm({ type }: { type: RegisterOrLogin }) {
-  const { watch, register, handleSubmit, reset } = useForm<FormData>({
+  const router = useRouter();
+  const { closeModal } = useAuthModal();
+  const authMutation = useAuthByEmail();
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  const form = useForm<FormData>({
     resolver: zodResolver(schema),
     mode: "onSubmit",
   });
-  const router = useRouter();
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
-  const authMutation = useAuthByEmail();
-  const { closeModal } = useAuthModal();
+
+  const password = form.watch("password") ?? "";
+  const strength = useMemo(() => getPasswordStrength(password), [password]);
+  const style = passwordStrengthStyles[strength.level];
 
   const onSubmit = (data: FormData) => {
     setSuccessMessage(null);
+
     authMutation.mutate(
       {
         email: data.email.trim(),
@@ -49,8 +65,9 @@ export function AuthForm({ type }: { type: RegisterOrLogin }) {
           setSuccessMessage(
             type === "login" ? "Вход успешен!" : "Регистрация успешна!"
           );
-          reset();
+          form.reset();
           closeModal();
+
           setTimeout(() => {
             router.push("/profile");
           }, 1000);
@@ -59,63 +76,80 @@ export function AuthForm({ type }: { type: RegisterOrLogin }) {
     );
   };
 
-  const password = watch("password") ?? "";
-  const strength = useMemo(() => getPasswordStrength(password), [password]);
-  const style = passwordStrengthStyles[strength.level];
-
   return (
     <>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
-        <div className="space-y-1">
-          <Label>Email</Label>
-          <Input {...register("email")} />
-        </div>
-
-        <div className="space-y-1">
-          <Label>Пароль</Label>
-          <Input
-            type="password"
-            {...register("password")}
-            className={`
-              transition
-              ${
-                type === "register"
-                  ? `${password.length > 0 ? style.ring + " ring-1" : ""}`
-                  : ""
-              }
-            `}
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <Input placeholder="you@example.com" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
 
-          {type === "register" && password.length > 0 && (
-            <div className="space-y-1 mt-2">
-              <div className="flex gap-1">
-                {[1, 2, 3].map((i) => (
-                  <div
-                    key={i}
-                    className={`
-                      h-1 flex-1 rounded-full transition-all duration-300
-                      ${strength.score >= i ? style.bar : "bg-muted"}
-                    `}
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Пароль</FormLabel>
+                <FormControl>
+                  <Input
+                    type="password"
+                    {...field}
+                    className={
+                      type === "register" && password.length > 0
+                        ? `${style.ring} ring-1 transition`
+                        : ""
+                    }
                   />
-                ))}
-              </div>
-              <p className={`text-xs ${style.textClass}`}>{style.text}</p>
-            </div>
-          )}
-        </div>
+                </FormControl>
+                <FormMessage />
 
-        <Button isLoading={authMutation.isPending} className="w-full">
-          {type === "login" ? "Войти" : "Зарегистрироваться"}
-        </Button>
-        {authMutation.error && (
-          <p className="text-sm text-destructive mt-1">
-            {authMutation.error.message}
-          </p>
-        )}
-        {successMessage && (
-          <p className="text-sm text-success mt-1">{successMessage}</p>
-        )}
-      </form>
+                {type === "register" && password.length > 0 && (
+                  <div className="mt-2 space-y-1">
+                    <div className="flex gap-1">
+                      {[1, 2, 3].map((i) => (
+                        <div
+                          key={i}
+                          className={`h-1 flex-1 rounded-full transition-all
+                            ${strength.score >= i ? style.bar : "bg-muted"}`}
+                        />
+                      ))}
+                    </div>
+                    <p className={`text-xs ${style.textClass}`}>{style.text}</p>
+                  </div>
+                )}
+              </FormItem>
+            )}
+          />
+
+          <Button
+            type="submit"
+            isLoading={authMutation.isPending}
+            className="w-full"
+          >
+            {type === "login" ? "Войти" : "Зарегистрироваться"}
+          </Button>
+
+          {authMutation.error && (
+            <p className="text-sm text-destructive">
+              {authMutation.error.message}
+            </p>
+          )}
+
+          {successMessage && (
+            <p className="text-sm text-success">{successMessage}</p>
+          )}
+        </form>
+      </Form>
 
       <div className="relative my-4">
         <div className="absolute inset-0 flex items-center">
@@ -128,20 +162,20 @@ export function AuthForm({ type }: { type: RegisterOrLogin }) {
 
       <div className="space-y-2">
         <Button
-          onClick={() => registerOAuth("google")}
           type="button"
           variant="outline"
           className="w-full gap-2"
+          onClick={() => registerOAuth("google")}
         >
           <Mail className="h-4 w-4" />
           Google
         </Button>
 
         <Button
-          onClick={() => registerOAuth("github")}
           type="button"
           variant="outline"
           className="w-full gap-2"
+          onClick={() => registerOAuth("github")}
         >
           <GithubLogoIcon className="h-4 w-4" />
           GitHub
