@@ -7,13 +7,9 @@ import {
   CardTitle,
 } from "../../shared/card";
 import { BookOpen, Trophy, Users } from "lucide-react";
-import { useGetUser } from "@/hooks/api/queries/useGetUser";
-import { useGetUserStats } from "@/hooks/api/queries/useGetUserStats";
+import { UserStatisticsI } from "@/interfaces/user";
 
-export default function ProfileStats() {
-  const { data: user } = useGetUser();
-  const { data: userStats } = useGetUserStats(user?.id);
-  if (!user || !userStats) return;
+export default function ProfileStats({userStats}:{userStats:UserStatisticsI}) {
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">

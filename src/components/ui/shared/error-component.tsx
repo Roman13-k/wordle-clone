@@ -1,19 +1,20 @@
-"use client";
-
 import { Button } from "@/components/ui/shared/button";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, Home } from "lucide-react";
 import { Card, CardContent, CardFooter } from "./card";
+import Link from "next/link";
 
-type ErrorComponentProps = {
+interface ErrorComponentProps {
   message?: string;
   onRetry: () => void;
   isLoading?: boolean;
-};
+  goHome?: boolean;
+}
 
 export default function ErrorComponent({
   message = "При загрузке данных произошла ошибка",
   onRetry,
   isLoading = false,
+  goHome = false,
 }: ErrorComponentProps) {
   return (
     <Card className="max-w-md mx-auto mt-8 border-red-500">
@@ -25,10 +26,19 @@ export default function ErrorComponent({
         </p>
       </CardContent>
 
-      <CardFooter className="flex justify-center">
+      <CardFooter className="flex justify-center gap-2">
         <Button isLoading={isLoading} variant="destructive" onClick={onRetry}>
           Повторить
         </Button>
+
+        {goHome && (
+          <Button variant="outline" asChild className="flex items-center gap-2">
+            <Link href={"/"}>
+              <Home className="w-4 h-4" />
+              На главную
+            </Link>
+          </Button>
+        )}
       </CardFooter>
     </Card>
   );

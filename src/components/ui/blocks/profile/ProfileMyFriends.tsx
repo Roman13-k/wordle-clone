@@ -1,3 +1,4 @@
+"use client";
 import {
   Card,
   CardContent,
@@ -7,6 +8,7 @@ import {
 } from "../../shared/card";
 
 export default function ProfileMyFriends() {
+
   return (
     <Card>
       <CardHeader>

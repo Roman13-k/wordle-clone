@@ -1,3 +1,4 @@
+"use client";
 import {
   Card,
   CardContent,
@@ -7,8 +8,10 @@ import {
 } from "../../shared/card";
 import { Button } from "../../shared/button";
 import { Plus } from "lucide-react";
+import { UserI } from "@/interfaces/user";
 
-export default function ProfileMyWords() {
+export default function ProfileMyWords({user}:{user:UserI}) {
+
   return (
     <Card>
       <CardHeader>

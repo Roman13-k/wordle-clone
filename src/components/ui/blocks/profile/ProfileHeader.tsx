@@ -3,25 +3,24 @@
 import { Card, CardContent } from "../../shared/card";
 import { Mail, LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
-
-import { useGetUser } from "@/hooks/api/queries/useGetUser";
 import { supabase } from "@/lib/supabaseClient";
-
-import ProfileEditModal from "./ProfileEditModal";
-import ProfileDeleteModal from "./ProfileDeleteModal";
+import ProfileDeleteModal from "./modals/ProfileDeleteModal";
 import UserAvatar from "./UserAvatar";
 import Streak from "./Streak";
 import { Button } from "../../shared/button";
+import { UserI } from "@/interfaces/user";
+import ProfileEditModal from "./modals/ProfileEditModal";
+import { useQueryClient } from "@tanstack/react-query";
 
-export default function ProfileHeader() {
-  const { data: user, refetch } = useGetUser();
+export default function ProfileHeader({user}:{user:UserI}) {
   const router = useRouter();
-
-  if (!user) return null;
+  const queryClient =useQueryClient()
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
     router.push("/");
+    router.refresh();
+    queryClient.removeQueries({ queryKey: ["user"] });
   };
 
   return (

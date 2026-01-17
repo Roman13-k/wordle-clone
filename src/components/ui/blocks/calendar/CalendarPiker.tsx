@@ -9,10 +9,11 @@ import { getUTCToday } from "@/utils/functions/getUTCToday";
 import { getCalendarVisibleRange } from "@/utils/functions/getCalendarVisibleRange";
 import { useGetUserGamesByRange } from "@/hooks/api/queries/useGetUserGamesByRange";
 import { useGetUser } from "@/hooks/api/queries/useGetUser";
+import { Skeleton } from "../../shared/skeleton";
 
 export default function CalendarPiker() {
   const router = useRouter();
-  const { data: user } = useGetUser();
+  const { data: user,isLoading: isUserLoading } = useGetUser();
   const { FIRST_WORD_DATE } = useGameStore();
   const [date, setDate] = useState<Date | undefined>();
   const [month, setMonth] = useState(new Date());
@@ -23,7 +24,7 @@ export default function CalendarPiker() {
       end: format(r.end, "yyyy-MM-dd"),
     };
   });
-  const { data } = useGetUserGamesByRange(range.start, range.end, user?.id);
+  const { data,isLoading: isUserGamesLoading } = useGetUserGamesByRange(range.start, range.end, user?.id);
 
   const handleSelect = (d?: Date) => {
     if (!d) return;
@@ -52,6 +53,8 @@ export default function CalendarPiker() {
   const loseDays = new Set(
     data?.filter((g) => !g.is_win).map((g) => g.game_date)
   );
+
+  if(isUserLoading || isUserGamesLoading) return <Skeleton className="rounded-md w-60 h-60"/>
 
   return (
     <Calendar

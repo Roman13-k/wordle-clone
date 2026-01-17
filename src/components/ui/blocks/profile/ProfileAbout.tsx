@@ -1,16 +1,13 @@
 "use client";
-import { useGetUser } from "@/hooks/api/queries/useGetUser";
 import {
   Card,
   CardDescription,
   CardHeader,
   CardTitle,
 } from "../../shared/card";
+import { UserI } from "@/interfaces/user";
 
-export default function ProfileAbout() {
-  const { data: user } = useGetUser();
-
-  if (!user) return;
+export default function ProfileAbout({user}:{user:UserI}) {
 
   return (
     <Card>

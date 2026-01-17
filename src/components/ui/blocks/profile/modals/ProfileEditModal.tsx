@@ -30,9 +30,9 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../../shared/form";
+} from "../../../shared/form";
 import { profileUpdateSchema } from "@/utils/validation/profileUpdateSchema";
-import UserAvatar from "./UserAvatar";
+import UserAvatar from "../UserAvatar";
 import { useUpdateUser } from "@/hooks/api/mutations/useUpdateUser";
 import { useToastStore } from "@/stores/toastStore";
 import { useGetUser } from "@/hooks/api/queries/useGetUser";
