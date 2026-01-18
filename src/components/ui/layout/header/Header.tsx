@@ -7,7 +7,7 @@ import { Puzzle } from "lucide-react";
 import Link from "next/link";
 import { useGetUser } from "@/hooks/api/queries/useGetUser";
 import UserAvatar from "../../blocks/profile/UserAvatar";
-import Streak from "../../blocks/profile/Streak";
+import StreakModal from "../../blocks/profile/streak/StreakModal";
 
 export default function Header() {
   const { data: user } = useGetUser();
@@ -27,7 +27,7 @@ export default function Header() {
             <Link href={"/profile"}>
               <UserAvatar className="h-10 w-10" cover={user.cover} size={18} />
             </Link>
-            <Streak
+            <StreakModal
               current_streak={user.current_streak}
               last_played_date={user.last_played_date}
             />

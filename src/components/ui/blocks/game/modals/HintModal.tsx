@@ -19,17 +19,19 @@ import { ChevronLeft, ChevronRight, Lightbulb } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export default function HintModal() {
-  const { hints, revealHint, generateHints, answerWord } = useGameStore();
+  const { hints, revealHint, generateHints, answerWord, resetHints } =
+    useGameStore();
   const hintsCount = hints.length;
   const [currentHintIndex, setCurrentHintIndex] = useState(0);
 
   useEffect(() => {
-    if (hintsCount || !answerWord) return;
+    if (hints) resetHints();
+    if (!answerWord) return;
 
     generateHints();
-  }, [answerWord]);
+  }, [answerWord, generateHints, resetHints]);
 
-  if (!hintsCount) return null;
+  if (!hints || hintsCount === 0) return null;
 
   return (
     <Dialog>
@@ -71,7 +73,7 @@ export default function HintModal() {
                 disabled={currentHintIndex === hintsCount - 1}
                 onClick={() =>
                   setCurrentHintIndex((prev) =>
-                    prev === hintsCount - 1 ? prev : prev + 1
+                    prev === hintsCount - 1 ? prev : prev + 1,
                   )
                 }
                 className="p-1 cursor-pointer disabled:cursor-auto rounded-md hover:bg-muted transition disabled:opacity-40"

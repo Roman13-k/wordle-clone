@@ -8,11 +8,11 @@ import { generateHint } from "@/utils/functions/generateHint";
 type GameState = {
   guessesMatrix: GuessRow[];
   currentWord: string[];
-  answerWord: string|null;
-  hints: { text: string; revealed: boolean,variant:HintsVariantsType }[];
+  answerWord: string | null;
+  hints: { text: string; revealed: boolean; variant: HintsVariantsType }[];
   MAX_WORD_LENGTH: 5;
   MAX_TRYS: 6;
-  FIRST_WORD_DATE:"2026-01-06";
+  FIRST_WORD_DATE: "2026-01-06";
   gameStatus: GameStatusType;
   error: string | null;
   isInputBlock: boolean;
@@ -25,9 +25,10 @@ type GameActions = {
   addError: (ms: string) => void;
   setMatrix: (matrix: GameState["guessesMatrix"]) => void;
   setGameStatus: (status: GameState["gameStatus"]) => void;
-  setAnswerWord:(word:GameState["answerWord"])=>void;
-  setInputBlock:(isBlock:boolean)=>void;
+  setAnswerWord: (word: GameState["answerWord"]) => void;
+  setInputBlock: (isBlock: boolean) => void;
   resetGame: () => void;
+  resetHints: () => void;
   revealHint: (index: number) => void;
   generateHints: (count?: number) => void;
 };
@@ -39,7 +40,7 @@ const initState: GameState = {
   hints: [],
   MAX_WORD_LENGTH: 5,
   MAX_TRYS: 6,
-  FIRST_WORD_DATE:"2026-01-06",
+  FIRST_WORD_DATE: "2026-01-06",
   error: null,
   gameStatus: "playing",
   isInputBlock: false,
@@ -81,15 +82,15 @@ export const useGameStore = create<GameState & GameActions>((set) => ({
       addError("Слова нет в словаре");
       return;
     }
-    if(!answerWord) return;
+    if (!answerWord) return;
 
     const states = checkWord(word, answerWord);
     const status: GameStatusType =
       word === answerWord
         ? "win"
         : guessesMatrix.length + 1 === MAX_TRYS
-        ? "lose"
-        : "playing";
+          ? "lose"
+          : "playing";
     set({
       guessesMatrix: [...guessesMatrix, { letters: currentWord, states }],
       currentWord: [],
@@ -100,7 +101,7 @@ export const useGameStore = create<GameState & GameActions>((set) => ({
   revealHint: (index) =>
     set((state) => {
       const newHints = state.hints.map((h, i) =>
-        i === index ? { ...h, revealed: true } : h
+        i === index ? { ...h, revealed: true } : h,
       );
       return { hints: newHints };
     }),
@@ -110,18 +111,23 @@ export const useGameStore = create<GameState & GameActions>((set) => ({
       const generatedHints: GameState["hints"] = [];
 
       for (let i = 0; i < count; i++) {
-      const hint = generateHint();
-      if (!hint) break;
+        const hint = generateHint();
+        if (!hint) break;
 
-      generatedHints.push({
-        text: hint.text,
-        variant: hint.variant,
-        revealed: false,
-      });
-    }
+        generatedHints.push({
+          text: hint.text,
+          variant: hint.variant,
+          revealed: false,
+        });
+      }
 
       return { hints: generatedHints };
     }),
+
+  resetHints: () =>
+    set(() => ({
+      hints: [],
+    })),
 
   addError: (ms) =>
     set(() => {
@@ -145,6 +151,6 @@ export const useGameStore = create<GameState & GameActions>((set) => ({
 
   setMatrix: (matrix) => set(() => ({ guessesMatrix: matrix })),
   setGameStatus: (status) => set(() => ({ gameStatus: status })),
-  setAnswerWord:(word)=>set(()=>({answerWord:word})),
-  setInputBlock:(isBlock)=>set(()=>({isInputBlock:isBlock}))
+  setAnswerWord: (word) => set(() => ({ answerWord: word })),
+  setInputBlock: (isBlock) => set(() => ({ isInputBlock: isBlock })),
 }));

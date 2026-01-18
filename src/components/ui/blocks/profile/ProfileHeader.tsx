@@ -6,11 +6,12 @@ import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
 import ProfileDeleteModal from "./modals/ProfileDeleteModal";
 import UserAvatar from "./UserAvatar";
-import Streak from "./Streak";
+import Streak from "./streak/Streak";
 import { Button } from "../../shared/button";
 import { UserI } from "@/interfaces/user";
 import ProfileEditModal from "./modals/ProfileEditModal";
 import { useQueryClient } from "@tanstack/react-query";
+import StreakModal from "./streak/StreakModal";
 
 export default function ProfileHeader({user}:{user:UserI}) {
   const router = useRouter();
@@ -39,10 +40,7 @@ export default function ProfileHeader({user}:{user:UserI}) {
 
         <div className="flex flex-wrap items-center gap-6">
           <div className="flex items-center gap-2">
-            <Streak
-              last_played_date={user.last_played_date}
-              current_streak={user.current_streak}
-            />
+           <StreakModal current_streak={user.current_streak} last_played_date={user.last_played_date}/>
             <span className="text-sm text-muted-foreground">дней подряд</span>
           </div>
 
