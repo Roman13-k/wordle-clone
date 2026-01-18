@@ -1,15 +1,16 @@
 import { create } from "zustand";
 import { useToastStore } from "./toastStore";
 import { WORDS } from "@/dictionaries/words";
-import { GameStatusType, GuessRow, HintsVariantsType } from "@/types/game";
+import { GameStatusType, GuessRow } from "@/types/game";
 import { checkWord } from "@/utils/functions/checkWord";
 import { generateHint } from "@/utils/functions/generateHint";
+import { HintI } from "@/interfaces/game";
 
 type GameState = {
   guessesMatrix: GuessRow[];
   currentWord: string[];
   answerWord: string | null;
-  hints: { text: string; revealed: boolean; variant: HintsVariantsType }[];
+  hints: HintI[];
   MAX_WORD_LENGTH: 5;
   MAX_TRYS: 6;
   FIRST_WORD_DATE: "2026-01-06";
@@ -111,7 +112,7 @@ export const useGameStore = create<GameState & GameActions>((set) => ({
       const generatedHints: GameState["hints"] = [];
 
       for (let i = 0; i < count; i++) {
-        const hint = generateHint();
+        const hint = generateHint(generatedHints);
         if (!hint) break;
 
         generatedHints.push({

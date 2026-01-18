@@ -1,20 +1,19 @@
 import { HintsVariantsType } from "@/types/game";
 import { HINTS_CONFIG } from "../data/hintsConfig";
 import { useGameStore } from "@/stores/gameStore";
+import { HintI } from "@/interfaces/game";
 
-export function generateHint() {
-  const { answerWord, hints } = useGameStore.getState();
+export function generateHint(generatedHints: HintI[]) {
+  const { answerWord } = useGameStore.getState();
   if (!answerWord) return null;
 
   const allVariants = Object.keys(HINTS_CONFIG) as HintsVariantsType[];
   const availableVariants = allVariants.filter(
-    (variant) => !hints.find((h)=>h.variant===variant)
+    (variant) => !generatedHints.find((h) => h.variant === variant),
   );
 
   const variant =
-    availableVariants[
-      Math.floor(Math.random() * availableVariants.length)
-    ];
+    availableVariants[Math.floor(Math.random() * availableVariants.length)];
   const template = HINTS_CONFIG[variant];
   let text = "";
 
@@ -45,7 +44,7 @@ export function generateHint() {
     case "endsWithLetter":
       text = template.replace(
         "{letter}",
-        answerWord[answerWord.length - 1].toUpperCase()
+        answerWord[answerWord.length - 1].toUpperCase(),
       );
       break;
   }
