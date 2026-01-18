@@ -7,17 +7,18 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/shared/dialog";
-import { Flame } from "lucide-react";
 import Streak from "./Streak";
 import { UserI } from "@/interfaces/user";
 import { Progress } from "@/components/ui/shared/progress";
 import { getStreakLevel } from "@/utils/functions/getStreakLevel";
+import FlameWaveProgress from "./FlameWaveProgress";
 
 export default function StreakModal({
   current_streak,
   last_played_date,
 }: Pick<UserI, "current_streak" | "last_played_date">) {
   const { currentLevel, nextLevel } = getStreakLevel(current_streak);
+  const progress = (current_streak / nextLevel.min) * 100;
 
   return (
     <Dialog>
@@ -34,23 +35,16 @@ export default function StreakModal({
           <DialogTitle className="text-center">Серия дней</DialogTitle>
         </DialogHeader>
 
-        <div className="flex flex-col items-center gap-6">
-          <div className="relative">
-            <Flame className="h-24 w-24 text-orange-500 z-10 relative" />
-
-            <div className="absolute inset-0 rounded-full animate-pulse bg-orange-400/20 blur-xl" />
-          </div>
+        <div className="flex flex-col items-center gap-2">
+          <FlameWaveProgress color={currentLevel.color} percent={progress} />
 
           <div className="text-2xl font-bold">
-            <span className="text-orange-500">{current_streak}</span>
+            <span className={currentLevel.color}>{current_streak}</span>
             <span className="text-muted-foreground"> / {nextLevel.min}</span>
           </div>
 
           <div className="w-full flex items-center gap-2">
-            <Progress
-              value={(current_streak / nextLevel.min) * 100}
-              className="w-[65%]"
-            />
+            <Progress value={progress} className="w-[65%]" />
 
             <div className="text-right text-sm">
               <p className="font-medium">Следующий уровень</p>

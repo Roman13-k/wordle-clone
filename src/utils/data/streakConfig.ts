@@ -1,9 +1,4 @@
-import {
-  Flame,
-  FlameIcon,
-  Sparkles,
-  Zap,
-} from "lucide-react";
+import { Flame, FlameIcon, Sparkles, Zap } from "lucide-react";
 
 export type StreakLevel = {
   min: number;
@@ -14,22 +9,22 @@ export type StreakLevel = {
 export const STREAK_LEVELS: StreakLevel[] = [
   {
     min: 0,
-    color: "text-orange-400",
+    color: "#F97316",
     Icon: Flame,
   },
   {
     min: 7,
-    color: "text-orange-500",
+    color: "#EA580C",
     Icon: FlameIcon,
   },
   {
     min: 14,
-    color: "text-red-500",
+    color: "#EF4444",
     Icon: Zap,
   },
   {
     min: 30,
-    color: "text-fuchsia-500",
+    color: "#C026D3",
     Icon: Sparkles,
   },
 ];
