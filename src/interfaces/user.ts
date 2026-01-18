@@ -13,4 +13,6 @@ export interface UserStatisticsI {
   wins: number;
   plays: number;
   friends_count: number;
+  avg_time_used: number;
+  avg_rows_used: number;
 }

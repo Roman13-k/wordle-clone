@@ -6,15 +6,17 @@ export async function postGameResult({
   game_id,
   is_win,
   game_date,
+  num_rows_used,
+  completion_time_sec,
 }: PostGameResultParams) {
-  const { data, error } = await supabase
-    .from("user_games")
-    .insert({
-      user_id,
-      game_id,
-      is_win,
-      game_date,
-    });
+  const { data, error } = await supabase.from("user_games").insert({
+    user_id,
+    game_id,
+    is_win,
+    game_date,
+    num_rows_used,
+    completion_time_sec,
+  });
 
   if (error) throw error;
   return data;

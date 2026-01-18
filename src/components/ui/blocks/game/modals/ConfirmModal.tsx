@@ -1,4 +1,5 @@
 "use client";
+import { ConfirmType } from "@/types";
 import { Button } from "../../../shared/button";
 import {
   Dialog,
@@ -8,11 +9,17 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../../../shared/dialog";
-import { useSaveCurrentGuess } from "@/hooks/useSaveCurrentGuess";
+import { Dispatch, SetStateAction } from "react";
 
-export default function ConfirmModal() {
-  const [isConfirmModal, setIsConfirmModal] = useSaveCurrentGuess();
+interface ConfirmModalProps {
+  isConfirmModal: "open" | "close" | ConfirmType;
+  setIsConfirmModal: Dispatch<SetStateAction<"open" | "close" | ConfirmType>>;
+}
 
+export default function ConfirmModal({
+  isConfirmModal,
+  setIsConfirmModal,
+}: ConfirmModalProps) {
   return (
     <Dialog open={isConfirmModal === "open"} onOpenChange={(open) => !open}>
       <DialogContent>

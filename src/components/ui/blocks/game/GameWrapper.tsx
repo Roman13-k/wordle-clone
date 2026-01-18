@@ -22,12 +22,16 @@ type WordHookResult = {
 type GameWrapperProps = PropsWithChildren<{
   className?: string;
   useWordHook: () => WordHookResult;
+  time: number;
+  resetTimer: () => void;
 }>;
 
 export default function GameWrapper({
   children,
   className,
   useWordHook,
+  time,
+  resetTimer,
 }: GameWrapperProps) {
   const {
     data,
@@ -38,8 +42,7 @@ export default function GameWrapper({
   } = useWordHook();
   const { mutate } = usePostGameResult();
   const { data: user } = useGetUser();
-  const setAnswerWord = useGameStore((s) => s.setAnswerWord);
-  const gameStatus = useGameStore((s) => s.gameStatus);
+  const { setAnswerWord, gameStatus, guessesMatrix } = useGameStore();
   const addToast = useToastStore((s) => s.addToast);
 
   useEffect(() => {
@@ -51,7 +54,11 @@ export default function GameWrapper({
         game_date: data.date,
         user_id: user.id,
         game_id: data.id,
+        num_rows_used: guessesMatrix.length,
+        completion_time_sec: time,
       });
+
+      resetTimer();
     }
     if (gameStatus === "playing") {
       refetch();
@@ -63,7 +70,7 @@ export default function GameWrapper({
       addToast(
         "Ошибка загрузки данных",
         "Не удалось получить данные с сервера. Проверьте подключение к интернету и попробуйте ещё раз.",
-        "error"
+        "error",
       );
     }
 

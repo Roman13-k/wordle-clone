@@ -11,7 +11,7 @@ export default function ProfilePage() {
   return (
     <ProfileDataProvider>
       {(user, userStats) => (
-        <div className="max-w-5xl mx-auto flex flex-col gap-6 p-4">
+        <div className="max-w-6xl mx-auto flex flex-col gap-6 p-4">
           <ProfileHeader user={user} />
           <ProfileStats userStats={userStats} />
           <ProfileAbout user={user} />

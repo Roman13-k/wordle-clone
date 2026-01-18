@@ -39,7 +39,7 @@ export default function StreakModal({
           <FlameWaveProgress color={currentLevel.color} percent={progress} />
 
           <div className="text-2xl font-bold">
-            <span className={currentLevel.color}>{current_streak}</span>
+            <span className={currentLevel.twColor}>{current_streak}</span>
             <span className="text-muted-foreground"> / {nextLevel.min}</span>
           </div>
 

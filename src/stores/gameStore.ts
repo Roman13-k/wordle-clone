@@ -14,6 +14,7 @@ type GameState = {
   MAX_WORD_LENGTH: 5;
   MAX_TRYS: 6;
   FIRST_WORD_DATE: "2026-01-06";
+  gameTime: number;
   gameStatus: GameStatusType;
   error: string | null;
   isInputBlock: boolean;
@@ -42,6 +43,7 @@ const initState: GameState = {
   MAX_WORD_LENGTH: 5,
   MAX_TRYS: 6,
   FIRST_WORD_DATE: "2026-01-06",
+  gameTime: 0,
   error: null,
   gameStatus: "playing",
   isInputBlock: false,
@@ -145,6 +147,7 @@ export const useGameStore = create<GameState & GameActions>((set) => ({
       guessesMatrix: [],
       currentWord: [],
       gameStatus: "playing",
+      gameTime: 0,
       error: null,
       isInputBlock: false,
     }));
