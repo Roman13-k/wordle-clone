@@ -1,17 +1,16 @@
 "use client";
 
-import Plates from "@/components/ui/blocks/game/Plates";
-import Keys from "@/components/ui/blocks/game/Keys";
+import Plates from "@/components/ui/blocks/game/plates/Plates";
+import Keys from "@/components/ui/blocks/game/keys/Keys";
 import GameWrapper from "./GameWrapper";
 import { useTodayWord, useWordByDate } from "@/hooks/api/queries/useWordByDate";
 import ResultModal from "./modals/ResultModal";
 import ConfirmModal from "./modals/ConfirmModal";
 import { useGetUser } from "@/hooks/api/queries/useGetUser";
-import Stopwatch from "../../shared/stopwatch";
-import { useGameStore } from "@/stores/gameStore";
-import { useStopwatch } from "@/hooks/useStopWatch";
 import { useSaveCurrentGuess } from "@/hooks/useSaveCurrentGuess";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
+import StopwatchContainer from "./StopwatchContainer";
+import { useGameStore } from "@/stores/gameStore";
 
 interface GameBoardProps {
   className?: string;
@@ -20,46 +19,30 @@ interface GameBoardProps {
 
 export function GameBoard({ className, date }: GameBoardProps) {
   const { data: user } = useGetUser();
-  const { gameStatus } = useGameStore();
-  const useWordHook = date
-    ? () => useWordByDate(date, user?.id)
-    : () => useTodayWord(user?.id);
-  const { time, isRunning, start, pause, reset } = useStopwatch();
+  const useWordHook = useCallback(() => {
+    return date ? useWordByDate(date, user?.id) : useTodayWord(user?.id);
+  }, [date, user?.id]);
   const [isConfirmModal, setIsConfirmModal] = useSaveCurrentGuess();
+  const resetTimer = useGameStore.getState().resetTimer;
 
   useEffect(() => {
     if (isConfirmModal === "rejected") {
-      reset();
+      resetTimer?.();
     }
   }, [isConfirmModal]);
 
   return (
-    <>
-      <GameWrapper
-        resetTimer={reset}
-        time={time}
-        className={className + "relative"}
-        useWordHook={useWordHook}
-      >
-        <Plates />
-        <Keys />
-        {gameStatus === "playing" && (
-          <Stopwatch
-            time={time}
-            isRunning={isRunning}
-            start={start}
-            pause={pause}
-            reset={reset}
-            className="absolute top-22 right-0"
-          />
-        )}
-      </GameWrapper>
+    <GameWrapper className={className + "relative"} useWordHook={useWordHook}>
+      <Plates />
+      <Keys />
+
+      <StopwatchContainer />
 
       <ResultModal />
       <ConfirmModal
         isConfirmModal={isConfirmModal}
         setIsConfirmModal={setIsConfirmModal}
       />
-    </>
+    </GameWrapper>
   );
 }

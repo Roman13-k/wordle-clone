@@ -5,15 +5,13 @@ import { GameStatusType, GuessRow } from "@/types/game";
 import { checkWord } from "@/utils/functions/checkWord";
 import { generateHint } from "@/utils/functions/generateHint";
 import { HintI } from "@/interfaces/game";
+import { MAX_TRYS, MAX_WORD_LENGTH } from "@/utils/data/gameConfig";
 
 type GameState = {
   guessesMatrix: GuessRow[];
   currentWord: string[];
   answerWord: string | null;
   hints: HintI[];
-  MAX_WORD_LENGTH: 5;
-  MAX_TRYS: 6;
-  FIRST_WORD_DATE: "2026-01-06";
   gameTime: number;
   gameStatus: GameStatusType;
   error: string | null;
@@ -33,6 +31,9 @@ type GameActions = {
   resetHints: () => void;
   revealHint: (index: number) => void;
   generateHints: (count?: number) => void;
+
+  getCompletionTime?: () => number;
+  resetTimer?: () => void;
 };
 
 const initState: GameState = {
@@ -40,9 +41,6 @@ const initState: GameState = {
   currentWord: [],
   answerWord: null,
   hints: [],
-  MAX_WORD_LENGTH: 5,
-  MAX_TRYS: 6,
-  FIRST_WORD_DATE: "2026-01-06",
   gameTime: 0,
   error: null,
   gameStatus: "playing",
@@ -53,7 +51,7 @@ export const useGameStore = create<GameState & GameActions>((set) => ({
   ...initState,
 
   addLetter: (v) => {
-    const { currentWord, MAX_WORD_LENGTH, addError } = useGameStore.getState();
+    const { currentWord, addError } = useGameStore.getState();
 
     if (currentWord.length >= MAX_WORD_LENGTH) {
       addError("Лимит букв");
@@ -68,14 +66,8 @@ export const useGameStore = create<GameState & GameActions>((set) => ({
     })),
 
   submitWord: () => {
-    const {
-      currentWord,
-      MAX_WORD_LENGTH,
-      MAX_TRYS,
-      addError,
-      guessesMatrix,
-      answerWord,
-    } = useGameStore.getState();
+    const { currentWord, addError, guessesMatrix, answerWord } =
+      useGameStore.getState();
 
     const word = currentWord.join("").toLowerCase();
     if (currentWord.length !== MAX_WORD_LENGTH) {

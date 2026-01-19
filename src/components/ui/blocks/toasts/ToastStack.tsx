@@ -14,7 +14,8 @@ const iconMap = {
 };
 
 export default function ToastStack() {
-  const { toasts, removeToast } = useToastStore();
+  const toasts = useToastStore((s) => s.toasts);
+  const removeToast = useToastStore((s) => s.removeToast);
 
   return (
     <div className="fixed bottom-5 right-5 z-50 flex flex-col gap-3 w-90 max-w-[calc(100vw-2rem)]">
@@ -35,7 +36,7 @@ export default function ToastStack() {
                   "relative border-l-4 pr-10",
                   t.type === "success" && "border-l-emerald-500",
                   t.type === "error" && "border-l-destructive",
-                  t.type === "warning" && "border-l-yellow-500"
+                  t.type === "warning" && "border-l-yellow-500",
                 )}
               >
                 <CardContent className="flex gap-3 p-4">
@@ -44,7 +45,7 @@ export default function ToastStack() {
                       "h-5 w-5 shrink-0 mt-0.5",
                       t.type === "success" && "text-emerald-500",
                       t.type === "error" && "text-destructive",
-                      t.type === "warning" && "text-yellow-500"
+                      t.type === "warning" && "text-yellow-500",
                     )}
                   />
 

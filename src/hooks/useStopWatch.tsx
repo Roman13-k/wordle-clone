@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 
 export function useStopwatch(key: string = "stopwatch") {
@@ -8,13 +8,19 @@ export function useStopwatch(key: string = "stopwatch") {
   const [isRunning, setIsRunning] = useState(true);
   const intervalRef = useRef<number | null>(null);
 
-  const start = () => setIsRunning(true);
-  const pause = () => setIsRunning(false);
-  const reset = () => {
+  const start = useCallback(() => {
+    setIsRunning(true);
+  }, []);
+
+  const pause = useCallback(() => {
+    setIsRunning(false);
+  }, []);
+
+  const reset = useCallback(() => {
     setTime(0);
     setStoredTime(0);
     setIsRunning(false);
-  };
+  }, [setStoredTime]);
 
   useEffect(() => {
     if (!isRunning) return;
@@ -39,7 +45,7 @@ export function useStopwatch(key: string = "stopwatch") {
     window.addEventListener("beforeunload", handleSave);
     return () => {
       document.removeEventListener("visibilitychange", handleSave);
-      window.addEventListener("beforeunload", handleSave);
+      window.removeEventListener("beforeunload", handleSave);
       handleSave();
     };
   }, [handleSave]);

@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { useToastStore } from "@/stores/toastStore";
 
 export default function MiniToast() {
-  const { miniToast } = useToastStore();
+  const miniToast = useToastStore((s) => s.miniToast);
 
   return (
     <AnimatePresence>

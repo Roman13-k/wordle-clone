@@ -14,6 +14,8 @@ export enum LETTERCOLOR {
   "absent" = "bg-sidebar-ring",
 }
 
+export type KeyType = "letter" | "enter" | "delete";
+
 export type HintsVariantsType =
   | "randomLetter"
   | "vowelCount"

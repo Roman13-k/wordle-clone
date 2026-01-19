@@ -1,6 +1,6 @@
 {
-  "name": "wordle",
-  "version": "0.1.0",
+  "name": "wordix",
+  "version": "0.3.0",
   "private": true,
   "author": {
     "name": "Roman",
@@ -8,10 +8,11 @@
     "url": "https://github.com/Roman13-k"
   },
   "main": "build/main.js",
-  "description": "Wordle Clone",
+  "description": "wordix - wordle clone",
   "scripts": {
     "build": "run-s next:build electron:build",
-    "dist": "run-s build electron:dist",
+    "dist": "run-s build electron:release",
+    "electron:release": "electron-builder --publish always",
     "electron:build_watch": "tsup --watch",
     "electron:build": "tsup",
     "electron:dev": "npm-run-all --parallel electron:build_watch electron:watch",
@@ -37,6 +38,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
+    "electron-updater": "^6.7.3",
     "get-port-please": "^3.2.0",
     "lucide-react": "^0.562.0",
     "motion": "^12.23.26",
@@ -74,7 +76,7 @@
   },
   "build": {
     "asar": true,
-    "executableName": "WordleClone",
+    "executableName": "WORDIX",
     "asarUnpack": [
       "node_modules/next",
       "node_modules/@img",
@@ -110,6 +112,18 @@
         "deb"
       ],
       "category": "Development"
-    }
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "Roman13-k",
+        "repo": "wordle-clone"
+      }
+    ]
   }
 }

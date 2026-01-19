@@ -1,30 +1,15 @@
-import { useGameStore } from "@/stores/gameStore";
+import { KeyType } from "@/types/game";
 import { Delete } from "lucide-react";
+import { ReactNode } from "react";
 
-export const keysData = [
-  // 1 ряд
-  ..."QWERTYUIOP".split("").map((letter) => ({
-    value: letter,
-    onClick: () => useGameStore.getState().addLetter(letter),
-  })),
-
-  // 2 ряд
-  ..."ASDFGHJKL".split("").map((letter) => ({
-    value: letter,
-    onClick: () => useGameStore.getState().addLetter(letter),
-  })),
-
-  // 3 ряд
-  {
-    value: "Enter",
-    onClick: () => useGameStore.getState().submitWord(),
-  },
-  ..."ZXCVBNM".split("").map((letter) => ({
-    value: letter,
-    onClick: () => useGameStore.getState().addLetter(letter),
-  })),
-  {
-    value: <Delete />,
-    onClick: () => useGameStore.getState().deleteLetter(),
-  },
+export const KEYS: { value: string | ReactNode; type: KeyType }[] = [
+  ..."QWERTYUIOP"
+    .split("")
+    .map((l) => ({ value: l, type: "letter" as KeyType })),
+  ..."ASDFGHJKL"
+    .split("")
+    .map((l) => ({ value: l, type: "letter" as KeyType })),
+  { value: "Enter", type: "enter" as KeyType },
+  ..."ZXCVBNM".split("").map((l) => ({ value: l, type: "letter" as KeyType })),
+  { value: <Delete />, type: "delete" as KeyType },
 ];

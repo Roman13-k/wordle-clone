@@ -1,20 +1,22 @@
 import { is } from "@electron-toolkit/utils";
-import { app, BrowserWindow, ipcMain } from "electron";
+import { app, BrowserWindow, dialog, ipcMain } from "electron";
 import { readFileSync } from "fs";
 import { getPort } from "get-port-please";
 import { startServer } from "next/dist/server/lib/start-server";
 import { join } from "path";
+import { autoUpdater } from "electron-updater";
 
 const createWindow = () => {
   const mainWindow = new BrowserWindow({
-    width: 900,
-    height: 670,
+    width: 1440,
+    height: 800,
     webPreferences: {
       preload: join(__dirname, "preload.js"),
       nodeIntegration: true,
     },
   });
 
+  mainWindow.maximize();
   mainWindow.on("ready-to-show", () => mainWindow.show());
 
   const loadURL = async () => {
@@ -37,7 +39,7 @@ const createWindow = () => {
 
 const startNextJSServer = async () => {
   try {
-    const nextJSPort = await getPort({ portRange: [30_011, 50_000] });
+    const nextJSPort = await getPort({ port: 3000 });
     const webDir = join(app.getAppPath(), "app");
 
     const configFilePath = join(webDir, ".next", "required-server-files.json");
@@ -66,6 +68,10 @@ const startNextJSServer = async () => {
 app.whenReady().then(() => {
   createWindow();
 
+  if (!is.dev) {
+    autoUpdater.autoDownload = false;
+    autoUpdater.checkForUpdates();
+  }
   ipcMain.on("ping", () => console.log("pong"));
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
@@ -74,4 +80,37 @@ app.whenReady().then(() => {
 
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") app.quit();
+});
+
+autoUpdater.on("update-available", () => {
+  dialog
+    .showMessageBox({
+      type: "info",
+      title: "Обновление",
+      message: "Доступна новая версия. Скачать?",
+      buttons: ["Скачать", "Позже"],
+    })
+    .then((r) => {
+      if (r.response === 0) {
+        autoUpdater.downloadUpdate();
+      }
+    });
+});
+
+autoUpdater.on("update-downloaded", () => {
+  dialog
+    .showMessageBox({
+      title: "Готово",
+      message: "Обновление загружено. Перезапустить?",
+      buttons: ["Да", "Позже"],
+    })
+    .then((r) => {
+      if (r.response === 0) {
+        autoUpdater.quitAndInstall();
+      }
+    });
+});
+
+autoUpdater.on("error", (err) => {
+  console.error("Updater error:", err);
 });
