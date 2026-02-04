@@ -5,6 +5,8 @@ import ToastStack from "@/components/ui/blocks/toasts/ToastStack";
 import MiniToast from "@/components/ui/blocks/toasts/MiniToast";
 import { ReactQueryProvider } from "@/components/providers/ReactQueryProvider";
 import MainContainer from "@/components/ui/layout/MainContainer";
+import { UpdateListener } from "@/components/ui/blocks/updater/UpdateListener";
+import UpdateModal from "@/components/ui/blocks/updater/UpdateModal";
 
 const dmSans = DM_Sans({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -39,6 +41,8 @@ export default function RootLayout({
           <MainContainer>
             <main className="h-full"> {children}</main>
           </MainContainer>
+          <UpdateListener />
+          <UpdateModal />
         </ReactQueryProvider>
       </body>
     </html>

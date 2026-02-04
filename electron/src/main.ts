@@ -1,13 +1,15 @@
 import { is } from "@electron-toolkit/utils";
-import { app, BrowserWindow, dialog, ipcMain } from "electron";
+import { app, BrowserWindow, ipcMain } from "electron";
 import { readFileSync } from "fs";
 import { getPort } from "get-port-please";
 import { startServer } from "next/dist/server/lib/start-server";
 import { join } from "path";
 import { autoUpdater } from "electron-updater";
 
+let mainWindow: BrowserWindow | null = null;
+
 const createWindow = () => {
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 1440,
     height: 800,
     webPreferences: {
@@ -17,16 +19,16 @@ const createWindow = () => {
   });
 
   mainWindow.maximize();
-  mainWindow.on("ready-to-show", () => mainWindow.show());
+  mainWindow.on("ready-to-show", () => mainWindow?.show());
 
   const loadURL = async () => {
     if (is.dev) {
-      mainWindow.loadURL("http://localhost:3000");
+      mainWindow?.loadURL("http://localhost:3000");
     } else {
       try {
         const port = await startNextJSServer();
         console.log("Next.js server started on port:", port);
-        mainWindow.loadURL(`http://localhost:${port}`);
+        mainWindow?.loadURL(`http://localhost:${port}`);
       } catch (error) {
         console.error("Error starting Next.js server:", error);
       }
@@ -71,6 +73,7 @@ app.whenReady().then(() => {
   if (!is.dev) {
     autoUpdater.autoDownload = false;
     autoUpdater.checkForUpdates();
+    initAutoUpdater();
   }
   ipcMain.on("ping", () => console.log("pong"));
   app.on("activate", () => {
@@ -82,35 +85,33 @@ app.on("window-all-closed", () => {
   if (process.platform !== "darwin") app.quit();
 });
 
-autoUpdater.on("update-available", () => {
-  dialog
-    .showMessageBox({
-      type: "info",
-      title: "Обновление",
-      message: "Доступна новая версия. Скачать?",
-      buttons: ["Скачать", "Позже"],
-    })
-    .then((r) => {
-      if (r.response === 0) {
-        autoUpdater.downloadUpdate();
-      }
+export function initAutoUpdater() {
+  autoUpdater.on("update-available", () => {
+    mainWindow?.webContents.send("update:available");
+  });
+
+  autoUpdater.on("download-progress", (progress) => {
+    mainWindow?.webContents.send("update:progress", {
+      percent: Math.round(progress.percent),
+      bytesPerSecond: progress.bytesPerSecond,
+      transferred: progress.transferred,
+      total: progress.total,
     });
+  });
+
+  autoUpdater.on("update-downloaded", () => {
+    mainWindow?.webContents.send("update:downloaded");
+  });
+
+  autoUpdater.on("error", (error) => {
+    mainWindow?.webContents.send("update:error", error.message);
+  });
+}
+
+ipcMain.handle("update:download", () => {
+  autoUpdater.downloadUpdate();
 });
 
-autoUpdater.on("update-downloaded", () => {
-  dialog
-    .showMessageBox({
-      title: "Готово",
-      message: "Обновление загружено. Перезапустить?",
-      buttons: ["Да", "Позже"],
-    })
-    .then((r) => {
-      if (r.response === 0) {
-        autoUpdater.quitAndInstall();
-      }
-    });
-});
-
-autoUpdater.on("error", (err) => {
-  console.error("Updater error:", err);
+ipcMain.handle("update:install", () => {
+  autoUpdater.quitAndInstall();
 });
