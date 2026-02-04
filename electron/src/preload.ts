@@ -1,4 +1,4 @@
-import { contextBridge, ipcRenderer, IpcRendererEvent } from "electron";
+import { contextBridge, ipcRenderer, IpcRendererEvent, shell } from "electron";
 import { UpdateErrorPayload, UpdateProgressPayload } from "../../electron";
 
 contextBridge.exposeInMainWorld("electron", {
@@ -8,6 +8,7 @@ contextBridge.exposeInMainWorld("electron", {
       channel: string,
       listener: (event: IpcRendererEvent, ...args: unknown[]) => void,
     ) => ipcRenderer.on(channel, listener),
+    openExternal: (url: string) => shell.openExternal(url),
   },
 });
 

@@ -15,6 +15,7 @@ declare global {
       ipcRenderer: {
         send: (channel: string, ...args: any[]) => void;
       };
+      openExternal: (url: string) => void;
     };
     updater: {
       onAvailable: (cb: () => void) => void;

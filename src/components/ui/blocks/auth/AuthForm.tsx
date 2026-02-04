@@ -23,7 +23,7 @@ import { z } from "zod";
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { RegisterOrLogin } from "@/types/auth";
+import { OAuthType, RegisterOrLogin } from "@/types/auth";
 import { useAuthByEmail } from "@/hooks/api/mutations/useAuthByEmail";
 import { registerOAuth } from "@/client/user/registerOAuth";
 import { useRouter } from "next/navigation";
@@ -63,7 +63,7 @@ export function AuthForm({ type }: { type: RegisterOrLogin }) {
       {
         onSuccess: () => {
           setSuccessMessage(
-            type === "login" ? "Вход успешен!" : "Регистрация успешна!"
+            type === "login" ? "Вход успешен!" : "Регистрация успешна!",
           );
           form.reset();
           closeModal();
@@ -72,8 +72,18 @@ export function AuthForm({ type }: { type: RegisterOrLogin }) {
             router.push("/profile");
           }, 1000);
         },
-      }
+      },
     );
+  };
+
+  const handleOAuth = async (provider: OAuthType) => {
+    const url = await registerOAuth(provider);
+
+    if (window.electron) {
+      window.electron.openExternal(url);
+    } else {
+      window.location.href = url;
+    }
   };
 
   return (
@@ -165,7 +175,7 @@ export function AuthForm({ type }: { type: RegisterOrLogin }) {
           type="button"
           variant="outline"
           className="w-full gap-2"
-          onClick={() => registerOAuth("google")}
+          onClick={() => handleOAuth("google")}
         >
           <Mail className="h-4 w-4" />
           Google
@@ -175,7 +185,7 @@ export function AuthForm({ type }: { type: RegisterOrLogin }) {
           type="button"
           variant="outline"
           className="w-full gap-2"
-          onClick={() => registerOAuth("github")}
+          onClick={() => handleOAuth("github")}
         >
           <GithubLogoIcon className="h-4 w-4" />
           GitHub
