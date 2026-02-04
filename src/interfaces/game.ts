@@ -8,7 +8,7 @@ export interface KeysI {
 export interface DailyWordI {
   id: string;
   date: string;
-  word: string;
+  hints: HintI[];
 }
 
 export interface AlreadyPlayedI {

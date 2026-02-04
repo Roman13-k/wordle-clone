@@ -4,10 +4,12 @@ import { LetterState } from "@/types/game";
 import { memo, useCallback, useEffect } from "react";
 import { KEYS } from "@/utils/data/keys";
 import KeyButton from "./KeyButton";
+import { useSubmitWord } from "@/hooks/useSubmitWord";
 
 const Keys = memo(() => {
-  const { addLetter, submitWord, deleteLetter, isInputBlock, guessesMatrix } =
+  const { addLetter, deleteLetter, isInputBlock, guessesMatrix } =
     useGameStore();
+  const submitWord = useSubmitWord();
 
   const handleKeyClick = useCallback(
     (key: (typeof KEYS)[number]) => {

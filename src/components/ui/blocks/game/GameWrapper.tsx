@@ -35,13 +35,20 @@ const GameWrapper = memo(
     } = useWordHook();
     const { mutate } = usePostGameResult();
     const { data: user } = useGetUser();
-    const setAnswerWord = useGameStore.getState().setAnswerWord;
     const gameStatus = useGameStore((state) => state.gameStatus);
     const guessesMatrix = useGameStore((state) => state.guessesMatrix);
+    const setDate = useGameStore((s) => s.setDate);
+    const setHintsFromServer = useGameStore((s) => s.setHintsFromServer);
     const addToast = useToastStore((s) => s.addToast);
 
     const getCompletionTime = useGameStore.getState().getCompletionTime;
     const resetTimer = useGameStore.getState().resetTimer;
+
+    useEffect(() => {
+      if (!data || isAlreadyPlayed(data)) return;
+      setDate(data.date);
+      setHintsFromServer(data.hints);
+    }, [data]);
 
     useEffect(() => {
       if (!data || !user || isAlreadyPlayed(data)) return;
@@ -71,10 +78,6 @@ const GameWrapper = memo(
           "Не удалось получить данные с сервера. Проверьте подключение к интернету и попробуйте ещё раз.",
           "error",
         );
-      }
-
-      if (data && !isAlreadyPlayed(data) && data?.word) {
-        setAnswerWord(data.word);
       }
     }, [data, isError]);
 

@@ -1,17 +1,9 @@
 import { AlreadyPlayedI, DailyWordI } from "@/interfaces/game";
 import { supabase } from "@/lib/supabaseClient";
 
-type WordSBType = {
-  id: string;
-  date: string;
-  en_words: {
-    word: string;
-  };
-};
-
 export async function getWordByDate(
   date: Date,
-  user_id?: string
+  user_id?: string,
 ): Promise<DailyWordI | AlreadyPlayedI> {
   const isoDate = date.toISOString().split("T")[0];
 
@@ -34,23 +26,12 @@ export async function getWordByDate(
     }
   }
 
-  const { data, error } = await supabase
-    .from("daily_words")
-    .select(
-      `
-            id,
-            date,
-             en_words (
-             word
-    )
-            `
-    )
-    .eq("date", isoDate)
-    .single<WordSBType>();
+  const { data, error } = await supabase.rpc("get_daily_word_with_hints", {
+    p_date: isoDate,
+    p_hints_count: 3,
+  });
 
-  if (error) {
-    throw error;
-  }
+  if (error) throw error;
 
-  return { id: data.id, date: data.date, word: data.en_words.word };
+  return { id: data.id, date: data.date, hints: data.hints };
 }

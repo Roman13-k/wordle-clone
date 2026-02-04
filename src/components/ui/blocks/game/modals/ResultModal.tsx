@@ -19,10 +19,11 @@ import { useGetUser } from "@/hooks/api/queries/useGetUser";
 
 export default function ResultModal() {
   const { data: user } = useGetUser();
-  const { answerWord, resetGame } = useGameStore();
   const { openModal } = useAuthModal();
   const router = useRouter();
   const gameStatus = useGameStore((s) => s.gameStatus);
+  const resetGame = useGameStore((s) => s.resetGame);
+  const guessesMatrix = useGameStore((s) => s.guessesMatrix);
   const [open, setOpen] = useState(false);
   const isOpen = isResultStatus(gameStatus);
 
@@ -67,11 +68,17 @@ export default function ResultModal() {
           </DialogDescription>
         </DialogHeader>
 
-        <div className="mt-4 flex justify-center">
-          <div className="rounded-md border border-border bg-muted px-6 py-2 text-lg font-mono tracking-widest">
-            {answerWord?.toUpperCase()}
+        {gameStatus === "win" ? (
+          <div className="mt-4 flex justify-center">
+            <div className="rounded-md border border-border bg-muted px-6 py-2 text-lg font-mono tracking-widest">
+              {guessesMatrix[guessesMatrix.length - 1].letters
+                .join("")
+                .toUpperCase()}
+            </div>
           </div>
-        </div>
+        ) : (
+          <></>
+        )}
 
         <div className="mt-4 text-center text-sm text-muted-foreground">
           {config.hint}

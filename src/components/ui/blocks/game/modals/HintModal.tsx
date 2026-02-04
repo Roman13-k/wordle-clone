@@ -16,23 +16,13 @@ import {
 } from "@/components/ui/shared/tooltip";
 import { useGameStore } from "@/stores/gameStore";
 import { ChevronLeft, ChevronRight, Lightbulb } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function HintModal() {
   const hints = useGameStore((state) => state.hints);
   const revealHint = useGameStore((state) => state.revealHint);
-  const generateHints = useGameStore((state) => state.generateHints);
-  const answerWord = useGameStore((state) => state.answerWord);
-  const resetHints = useGameStore((state) => state.resetHints);
   const hintsCount = hints.length;
   const [currentHintIndex, setCurrentHintIndex] = useState(0);
-
-  useEffect(() => {
-    if (hints) resetHints();
-    if (!answerWord) return;
-
-    generateHints();
-  }, [answerWord, generateHints, resetHints]);
 
   if (!hints || hintsCount === 0) return null;
 

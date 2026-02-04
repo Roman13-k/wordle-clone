@@ -1,36 +1,38 @@
 import { create } from "zustand";
 import { useToastStore } from "./toastStore";
-import { WORDS } from "@/dictionaries/words";
-import { GameStatusType, GuessRow } from "@/types/game";
-import { checkWord } from "@/utils/functions/checkWord";
-import { generateHint } from "@/utils/functions/generateHint";
+import { GameStatusType, GuessRow, LetterState } from "@/types/game";
 import { HintI } from "@/interfaces/game";
-import { MAX_TRYS, MAX_WORD_LENGTH } from "@/utils/data/gameConfig";
+import { MAX_WORD_LENGTH } from "@/utils/data/gameConfig";
 
 type GameState = {
   guessesMatrix: GuessRow[];
   currentWord: string[];
-  answerWord: string | null;
   hints: HintI[];
   gameTime: number;
+  date: string;
   gameStatus: GameStatusType;
   error: string | null;
+  isLoading: boolean;
   isInputBlock: boolean;
 };
 
 type GameActions = {
   addLetter: (v: string) => void;
   deleteLetter: () => void;
-  submitWord: () => void;
+  submitWord: (
+    word: string[],
+    states: LetterState[],
+    status: GameState["gameStatus"],
+  ) => void;
   addError: (ms: string) => void;
   setMatrix: (matrix: GameState["guessesMatrix"]) => void;
   setGameStatus: (status: GameState["gameStatus"]) => void;
-  setAnswerWord: (word: GameState["answerWord"]) => void;
+  setLoading: (v: boolean) => void;
+  setDate: (date: string) => void;
   setInputBlock: (isBlock: boolean) => void;
   resetGame: () => void;
-  resetHints: () => void;
   revealHint: (index: number) => void;
-  generateHints: (count?: number) => void;
+  setHintsFromServer: (hints: HintI[]) => void;
 
   getCompletionTime?: () => number;
   resetTimer?: () => void;
@@ -39,12 +41,13 @@ type GameActions = {
 const initState: GameState = {
   guessesMatrix: [],
   currentWord: [],
-  answerWord: null,
   hints: [],
+  date: new Date().toISOString().slice(0, 10),
   gameTime: 0,
   error: null,
   gameStatus: "playing",
   isInputBlock: false,
+  isLoading: false,
 };
 
 export const useGameStore = create<GameState & GameActions>((set) => ({
@@ -65,63 +68,28 @@ export const useGameStore = create<GameState & GameActions>((set) => ({
       currentWord: state.currentWord.slice(0, -1),
     })),
 
-  submitWord: () => {
-    const { currentWord, addError, guessesMatrix, answerWord } =
-      useGameStore.getState();
-
-    const word = currentWord.join("").toLowerCase();
-    if (currentWord.length !== MAX_WORD_LENGTH) {
-      addError("Недостаточно букв");
-      return;
-    } else if (!WORDS.has(word)) {
-      addError("Слова нет в словаре");
-      return;
-    }
-    if (!answerWord) return;
-
-    const states = checkWord(word, answerWord);
-    const status: GameStatusType =
-      word === answerWord
-        ? "win"
-        : guessesMatrix.length + 1 === MAX_TRYS
-          ? "lose"
-          : "playing";
+  submitWord: (word, states, status) => {
+    const { guessesMatrix } = useGameStore.getState();
     set({
-      guessesMatrix: [...guessesMatrix, { letters: currentWord, states }],
+      guessesMatrix: [...guessesMatrix, { letters: word, states }],
       currentWord: [],
       gameStatus: status,
     });
   },
 
-  revealHint: (index) =>
-    set((state) => {
-      const newHints = state.hints.map((h, i) =>
-        i === index ? { ...h, revealed: true } : h,
-      );
-      return { hints: newHints };
-    }),
-
-  generateHints: (count = 3) =>
-    set(() => {
-      const generatedHints: GameState["hints"] = [];
-
-      for (let i = 0; i < count; i++) {
-        const hint = generateHint(generatedHints);
-        if (!hint) break;
-
-        generatedHints.push({
-          text: hint.text,
-          variant: hint.variant,
-          revealed: false,
-        });
-      }
-
-      return { hints: generatedHints };
-    }),
-
-  resetHints: () =>
+  setHintsFromServer: (hints) =>
     set(() => ({
-      hints: [],
+      hints: hints.map((h) => ({
+        ...h,
+        revealed: false,
+      })),
+    })),
+
+  revealHint: (index) =>
+    set((state) => ({
+      hints: state.hints.map((h, i) =>
+        i === index ? { ...h, revealed: true } : h,
+      ),
     })),
 
   addError: (ms) =>
@@ -147,6 +115,7 @@ export const useGameStore = create<GameState & GameActions>((set) => ({
 
   setMatrix: (matrix) => set(() => ({ guessesMatrix: matrix })),
   setGameStatus: (status) => set(() => ({ gameStatus: status })),
-  setAnswerWord: (word) => set(() => ({ answerWord: word })),
   setInputBlock: (isBlock) => set(() => ({ isInputBlock: isBlock })),
+  setLoading: (isLoading) => set(() => ({ isLoading })),
+  setDate: (date) => set(() => ({ date })),
 }));
