@@ -27,7 +27,7 @@ export default function ProfileScreen({ id }: { id?: string }) {
             />
           ) : (
             <>
-              <ProfileHeader user={friend} />
+              <ProfileHeader status={relationship} user={friend} />
               <ProfileStats userStats={friendStats} />
               <ProfileAbout user={friend} />
             </>

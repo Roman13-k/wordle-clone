@@ -13,11 +13,20 @@ import { useQueryClient } from "@tanstack/react-query";
 import StreakModal from "./streak/StreakModal";
 import CopyButton from "../../shared/buttons/CopyButton";
 import { useGetUser } from "@/hooks/api/queries/useGetUser";
+import { useUpdateFriendStatus } from "@/hooks/api/mutations/useUpdateFriendStatus";
+import { FriendRequestStatus } from "@/types/user";
 
-export default function ProfileHeader({ user }: { user: UserI }) {
+export default function ProfileHeader({
+  user,
+  status,
+}: {
+  user: UserI;
+  status?: FriendRequestStatus;
+}) {
   const router = useRouter();
   const { data: authUser } = useGetUser();
   const queryClient = useQueryClient();
+  const { mutate, isPending } = useUpdateFriendStatus();
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -54,7 +63,7 @@ export default function ProfileHeader({ user }: { user: UserI }) {
             <span className="text-sm text-muted-foreground">дней подряд</span>
           </div>
 
-          {isOwnProfile && (
+          {isOwnProfile ? (
             <div className="flex items-center gap-2">
               <ProfileEditModal />
               <ProfileDeleteModal id={user.id} />
@@ -68,6 +77,24 @@ export default function ProfileHeader({ user }: { user: UserI }) {
                 <LogOut className="h-4 w-4" />
               </Button>
             </div>
+          ) : (
+            authUser &&
+            status != "none" && (
+              <Button
+                isLoading={isPending}
+                onClick={() =>
+                  mutate({
+                    userId: authUser.id,
+                    friendId: user.id,
+                    status: "blocked",
+                  })
+                }
+                variant={"destructive"}
+                title="Заблокировать пользователя"
+              >
+                Заблокировать
+              </Button>
+            )
           )}
         </div>
       </CardContent>
