@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/shared/dialog";
 import { Input } from "@/components/ui/shared/input";
 import { Textarea } from "@/components/ui/shared/textarea";
-import { Button } from "@/components/ui/shared/button";
+import { Button } from "@/components/ui/shared/buttons/button";
 import {
   Tabs,
   TabsList,
@@ -76,7 +76,7 @@ export default function ProfileEditModal() {
       addToast(
         "Ошибка",
         "Не удалось применить изменения. Попробуйте позже.",
-        "error"
+        "error",
       );
     } else if (isSuccess) {
       setOpen(false);

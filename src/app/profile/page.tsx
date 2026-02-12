@@ -4,7 +4,7 @@ import ProfileHeader from "@/components/ui/blocks/profile/ProfileHeader";
 import ProfileAbout from "@/components/ui/blocks/profile/ProfileAbout";
 import ProfileStats from "@/components/ui/blocks/profile/ProfileStats";
 import ProfileMyWords from "@/components/ui/blocks/profile/ProfileMyWords";
-import ProfileMyFriends from "@/components/ui/blocks/profile/ProfileMyFriends";
+import ProfileMyFriends from "@/components/ui/blocks/profile/friends/ProfileMyFriends";
 import ProfileDataProvider from "@/components/ui/blocks/profile/ProfileDataProvider";
 
 export default function ProfilePage() {
@@ -18,7 +18,7 @@ export default function ProfilePage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <ProfileMyWords user={user} />
-            <ProfileMyFriends />
+            <ProfileMyFriends user={user} />
           </div>
         </div>
       )}

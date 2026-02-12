@@ -16,8 +16,8 @@ export const STREAK_LEVELS: StreakLevel[] = [
   },
   {
     min: 7,
-    color: "oklch(70.5% 0.213 47.604)",
-    twColor: "text-orange-500",
+    color: "oklch(64.6% 0.222 41.116)",
+    twColor: "text-orange-600",
     Icon: FlameIcon,
   },
   {

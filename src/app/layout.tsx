@@ -21,7 +21,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Wordle",
+  title: "Wordix",
   description: "Wordle clone with Electron",
 };
 
@@ -36,13 +36,15 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ReactQueryProvider>
-          <ToastStack />
-          <MiniToast />
           <MainContainer>
             <main className="h-full"> {children}</main>
           </MainContainer>
+
           <UpdateListener />
           <UpdateModal />
+
+          <ToastStack />
+          <MiniToast />
         </ReactQueryProvider>
       </body>
     </html>

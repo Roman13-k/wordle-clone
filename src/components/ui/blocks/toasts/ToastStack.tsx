@@ -3,7 +3,7 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useToastStore } from "@/stores/toastStore";
 import { Card, CardContent } from "@/components/ui/shared/card";
-import { Button } from "@/components/ui/shared/button";
+import { Button } from "@/components/ui/shared/buttons/button";
 import { X, CheckCircle2, AlertTriangle, XCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -18,7 +18,7 @@ export default function ToastStack() {
   const removeToast = useToastStore((s) => s.removeToast);
 
   return (
-    <div className="fixed bottom-5 right-5 z-50 flex flex-col gap-3 w-90 max-w-[calc(100vw-2rem)]">
+    <div className="fixed bottom-5 right-5 z-200 flex flex-col gap-3 w-90 max-w-[calc(100vw-2rem)]">
       <AnimatePresence>
         {toasts.map((t) => {
           const Icon = iconMap[t.type];

@@ -1,7 +1,7 @@
 "use client";
 
 import { Card, CardContent } from "@/components/ui/shared/card";
-import { Button } from "@/components/ui/shared/button";
+import { Button } from "@/components/ui/shared/buttons/button";
 import { Clock, Play, Pause, RefreshCw } from "lucide-react";
 import { minSecFormat } from "@/utils/functions/minSecFormat";
 import { memo } from "react";

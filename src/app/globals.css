@@ -127,10 +127,10 @@
 }
 
 .error_animation {
-  animation: shaking 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) infinite;
+  animation: shaking_X 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) infinite;
 }
 
-@keyframes shaking {
+@keyframes shaking_X {
   0%,
   100% {
     transform: translateX(0) scale(1);
@@ -151,11 +151,15 @@
 }
 
 .animate-ball-red {
-  animation: ball 2.5s ease-out infinite, ball-red 2.5s ease-out infinite;
+  animation:
+    ball 2.5s ease-out infinite,
+    ball-red 2.5s ease-out infinite;
 }
 
 .animate-ball-green {
-  animation: ball 2.5s ease-out infinite, ball-green 2.5s ease-out infinite;
+  animation:
+    ball 2.5s ease-out infinite,
+    ball-green 2.5s ease-out infinite;
 }
 
 @keyframes ball {

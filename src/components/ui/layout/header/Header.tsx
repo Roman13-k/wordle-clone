@@ -9,12 +9,13 @@ import { useGetUser } from "@/hooks/api/queries/useGetUser";
 import UserAvatar from "../../blocks/profile/UserAvatar";
 import StreakModal from "../../blocks/profile/streak/StreakModal";
 import { usePathname } from "next/navigation";
+import { NotificationsDialog } from "./NotificationDialog";
 
 export default function Header() {
   const { data: user } = useGetUser();
   const pathname = usePathname();
 
-  const showHints = pathname === "/" || pathname === "/game";
+  const showHintsandTutorial = pathname === "/" || pathname === "/game";
 
   return (
     <header className="flex justify-between gap-4 w-full pt-4">
@@ -44,8 +45,13 @@ export default function Header() {
       </div>
 
       <div className="flex gap-4">
-        <HowToPlayModal />
-        {showHints && <HintModal />}
+        <NotificationsDialog />
+        {showHintsandTutorial && (
+          <>
+            <HowToPlayModal />
+            <HintModal />
+          </>
+        )}
       </div>
     </header>
   );

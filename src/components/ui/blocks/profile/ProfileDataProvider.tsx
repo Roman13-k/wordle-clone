@@ -1,64 +1,64 @@
 "use client";
 
 import { ReactNode, useEffect } from "react";
-import { useGetUser } from "@/hooks/api/queries/useGetUser";
 import ErrorComponent from "@/components/ui/shared/error-component";
-import { UserI, UserStatisticsI } from "@/interfaces/user";
 import WideSkeleton from "./skeletons/WideSkeleton";
 import StatsSkeleton from "./skeletons/StatsSkeleton";
 import HalfSkeleton from "./skeletons/HalfSkeleton";
-import { useGetUserStats } from "@/hooks/api/queries/useGetUserStats";
 import { useToastStore } from "@/stores/toastStore";
+import { UserI, UserStatisticsI } from "@/interfaces/user";
+import { useGetUserProfile } from "@/hooks/api/queries/useGetUserProfile";
+import { FriendRequestStatus } from "@/types/user";
 
 type ProfileDataProviderProps = {
-    children: (user: UserI, userStats: UserStatisticsI) => ReactNode;
+  userId?: string;
+  children: (
+    user: UserI,
+    stats: UserStatisticsI,
+    relationship: FriendRequestStatus,
+  ) => ReactNode;
 };
 
 export default function ProfileDataProvider({
-    children,
+  userId,
+  children,
 }: ProfileDataProviderProps) {
-    const { data: user, isLoading, isError, refetch, errorUpdateCount } = useGetUser();
-    const { data: userStats, isLoading: userStatsLoading, isError: statsError } = useGetUserStats(
-        user?.id
+  const { addToast } = useToastStore();
+  const { data, isLoading, isError, refetch } = useGetUserProfile(userId);
+
+  useEffect(() => {
+    if (isError) {
+      addToast(
+        "Ошибка загрузки данных",
+        "Не удалось получить данные профиля",
+        "error",
+      );
+    }
+  }, [isError]);
+
+  if (isLoading && !data) {
+    return (
+      <div className="max-w-5xl mx-auto flex flex-col gap-6 p-4">
+        <WideSkeleton />
+        <StatsSkeleton />
+        <WideSkeleton />
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <HalfSkeleton />
+          <HalfSkeleton />
+        </div>
+      </div>
     );
-    const {addToast}=useToastStore()
+  }
 
-     useEffect(() => {
-        if (isError ||statsError) {
-          addToast(
-            "Ошибка загрузки данных",
-            "Не удалось получить данные с сервера. Проверьте подключение к интернету и попробуйте ещё раз.",
-            "error"
-          );
-        }
-    
-      }, [isError]);
+  if (!data || isError) {
+    return (
+      <ErrorComponent
+        message="Не удалось загрузить профиль"
+        onRetry={refetch}
+        goHome
+      />
+    );
+  }
 
-    if ((isLoading || userStatsLoading) && errorUpdateCount < 1) {
-        return (
-            <div className="max-w-5xl mx-auto flex flex-col gap-6 p-4">
-                <WideSkeleton />
-                <StatsSkeleton />
-                <WideSkeleton />
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <HalfSkeleton />
-                    <HalfSkeleton />
-                </div>
-            </div>
-        );
-    }
-
-    if (isError || !user || statsError || !userStats) {
-        return (
-            <ErrorComponent
-                message="Не удалось загрузить профиль"
-                onRetry={refetch}
-                goHome
-                isLoading={isLoading}
-            />
-        );
-    }
-
-    return <>{children(user, userStats)}</>;
+  return <>{children(data.user, data.stats, data.relationship)}</>;
 }

@@ -1,6 +1,6 @@
 "use client";
 import { ConfirmType } from "@/types";
-import { Button } from "../../../shared/button";
+import { Button } from "../../../shared/buttons/button";
 import {
   Dialog,
   DialogContent,

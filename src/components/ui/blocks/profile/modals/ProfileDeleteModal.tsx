@@ -11,7 +11,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/shared/alert-dialog";
-import { Button } from "@/components/ui/shared/button";
+import { Button } from "@/components/ui/shared/buttons/button";
 import { useDeleteUser } from "@/hooks/api/mutations/useDeleteUser";
 import { useGetUser } from "@/hooks/api/queries/useGetUser";
 import { useToastStore } from "@/stores/toastStore";
@@ -30,7 +30,7 @@ export default function ProfileDeleteModal({ id }: { id: string }) {
       addToast(
         "Ошибка",
         "Не удалось удалить профиль. Попробуйте позже.",
-        "error"
+        "error",
       );
     } else if (isSuccess) {
       addToast("Готово", "Профиль успешно удалён.", "success");

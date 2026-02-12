@@ -13,7 +13,7 @@ import {
   TabsTrigger,
   TabsContent,
 } from "@/components/ui/shared/tabs";
-import { Button } from "@/components/ui/shared/button";
+import { Button } from "@/components/ui/shared/buttons/button";
 import { AuthForm } from "./AuthForm";
 import { useAuthModal } from "@/stores/authStore";
 

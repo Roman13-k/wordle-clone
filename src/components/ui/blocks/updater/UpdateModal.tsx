@@ -6,7 +6,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/shared/dialog";
-import { Button } from "@/components/ui/shared/button";
+import { Button } from "@/components/ui/shared/buttons/button";
 import { Progress } from "@/components/ui/shared/progress";
 import { Download, RefreshCcw, AlertTriangle } from "lucide-react";
 import { useUpdateStore } from "@/stores/updateStore";

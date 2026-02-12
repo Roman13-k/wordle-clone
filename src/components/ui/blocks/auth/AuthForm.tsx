@@ -2,7 +2,7 @@
 
 import { Mail } from "lucide-react";
 import { GithubLogoIcon } from "@phosphor-icons/react";
-import { Button } from "../../shared/button";
+import { Button } from "../../shared/buttons/button";
 import { Input } from "@/components/ui/shared/input";
 import {
   Form,

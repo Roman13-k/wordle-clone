@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/shared/button";
+import { Button } from "@/components/ui/shared/buttons/button";
 import { AlertCircle, Home } from "lucide-react";
 import { Card, CardContent, CardFooter } from "./card";
 import Link from "next/link";

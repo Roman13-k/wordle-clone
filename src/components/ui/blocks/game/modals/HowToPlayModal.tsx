@@ -9,7 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/shared/dialog";
-import { Button } from "@/components/ui/shared/button";
+import { Button } from "@/components/ui/shared/buttons/button";
 import { BookOpen } from "lucide-react";
 import { LETTERCOLOR, LetterState } from "@/types/game";
 import {

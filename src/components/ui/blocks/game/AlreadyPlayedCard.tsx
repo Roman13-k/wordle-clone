@@ -13,7 +13,7 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/shared/card";
-import { Button } from "@/components/ui/shared/button";
+import { Button } from "@/components/ui/shared/buttons/button";
 import { CalendarDays, CheckCircle2, XCircle } from "lucide-react";
 
 export default function AlreadyPlayedCard({ isWin }: { isWin: boolean }) {

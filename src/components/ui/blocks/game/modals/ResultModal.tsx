@@ -7,7 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/shared/dialog";
-import { Button } from "@/components/ui/shared/button";
+import { Button } from "@/components/ui/shared/buttons/button";
 import { useGameStore } from "@/stores/gameStore";
 import { useEffect, useState } from "react";
 import { RESULT_CONFIG } from "@/utils/data/resultСonfig";

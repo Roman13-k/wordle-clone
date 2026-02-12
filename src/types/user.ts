@@ -12,3 +12,10 @@ export type PostGameResultParams = {
   num_rows_used: number;
   completion_time_sec: number;
 };
+
+export type FriendRequestStatus =
+  | "pending"
+  | "accepted"
+  | "rejected"
+  | "blocked"
+  | "none";
