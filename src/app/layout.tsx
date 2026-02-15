@@ -36,9 +36,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ReactQueryProvider>
-          <MainContainer>
-            <main className="h-full"> {children}</main>
-          </MainContainer>
+          <main className="h-full"> {children}</main>
 
           <UpdateListener />
           <UpdateModal />
