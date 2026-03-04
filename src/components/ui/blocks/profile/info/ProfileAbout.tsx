@@ -4,11 +4,10 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../../shared/card";
+} from "../../../shared/card";
 import { UserI } from "@/interfaces/user";
 
-export default function ProfileAbout({user}:{user:UserI}) {
-
+export default function ProfileAbout({ user }: { user: UserI }) {
   return (
     <Card>
       <CardHeader>

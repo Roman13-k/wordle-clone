@@ -1,17 +1,17 @@
 "use client";
 
-import { Card, CardContent } from "../../shared/card";
+import { Card, CardContent } from "../../../shared/card";
 import { Mail, LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
-import ProfileDeleteModal from "./modals/ProfileDeleteModal";
-import UserAvatar from "./UserAvatar";
-import { Button } from "../../shared/buttons/button";
+import ProfileDeleteModal from "./ProfileDeleteModal";
+import UserAvatar from "../UserAvatar";
+import { Button } from "../../../shared/buttons/button";
 import { UserI } from "@/interfaces/user";
-import ProfileEditModal from "./modals/ProfileEditModal";
+import ProfileEditModal from "./ProfileEditModal";
 import { useQueryClient } from "@tanstack/react-query";
-import StreakModal from "./streak/StreakModal";
-import CopyButton from "../../shared/buttons/CopyButton";
+import StreakModal from "../streak/StreakModal";
+import CopyButton from "../../../shared/buttons/CopyButton";
 import { useGetUser } from "@/hooks/api/queries/useGetUser";
 import { useUpdateFriendStatus } from "@/hooks/api/mutations/useUpdateFriendStatus";
 import { FriendRequestStatus } from "@/types/user";

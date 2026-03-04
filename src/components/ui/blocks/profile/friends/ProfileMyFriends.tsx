@@ -1,7 +1,6 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "../../../shared/card";
-import { AddFriendModal } from "../modals/AddFriendModal";
 import { FriendList } from "./FriendsList";
 import { useGetFriendsRequests } from "@/hooks/api/queries/useGetFriendsRequests";
 import { Button } from "@/components/ui/shared/buttons/button";
@@ -9,6 +8,7 @@ import { normalizeFriend } from "@/utils/functions/normalizeFriend";
 import { ListState } from "@/components/ui/shared/listState";
 import { UserI } from "@/interfaces/user";
 import { useGetUser } from "@/hooks/api/queries/useGetUser";
+import { AddFriendModal } from "./AddFriendModal";
 
 export default function ProfileMyFriends({ user }: { user: UserI }) {
   const { data: ownUser } = useGetUser();

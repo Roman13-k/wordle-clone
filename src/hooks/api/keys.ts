@@ -12,6 +12,9 @@ export const userKeys = {
 
   me: () => [...userKeys.all, "me"] as const,
 
+  userWords: (userId?: string) =>
+    [...userKeys.all, "user-words", userId] as const,
+
   profile: (userId?: string) =>
     [...userKeys.all, "profile", userId ?? "me"] as const,
 

@@ -1,9 +1,9 @@
 "use client";
 
-import ProfileHeader from "@/components/ui/blocks/profile/ProfileHeader";
-import ProfileAbout from "@/components/ui/blocks/profile/ProfileAbout";
+import ProfileHeader from "@/components/ui/blocks/profile/info/ProfileHeader";
+import ProfileAbout from "@/components/ui/blocks/profile/info/ProfileAbout";
 import ProfileStats from "@/components/ui/blocks/profile/ProfileStats";
-import ProfileMyWords from "@/components/ui/blocks/profile/ProfileMyWords";
+import ProfileMyWords from "@/components/ui/blocks/profile/custom-words/ProfileMyWords";
 import ProfileMyFriends from "@/components/ui/blocks/profile/friends/ProfileMyFriends";
 import ProfileDataProvider from "@/components/ui/blocks/profile/ProfileDataProvider";
 import MainContainer from "@/components/ui/layout/MainContainer";

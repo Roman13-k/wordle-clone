@@ -1,9 +1,9 @@
 "use client";
-import ProfileAbout from "@/components/ui/blocks/profile/ProfileAbout";
+import ProfileAbout from "@/components/ui/blocks/profile/info/ProfileAbout";
 import ProfileDataProvider from "@/components/ui/blocks/profile/ProfileDataProvider";
-import ProfileHeader from "@/components/ui/blocks/profile/ProfileHeader";
+import ProfileHeader from "@/components/ui/blocks/profile/info/ProfileHeader";
 import ProfileStats from "@/components/ui/blocks/profile/ProfileStats";
-import ProfileMyWords from "../ui/blocks/profile/ProfileMyWords";
+import ProfileMyWords from "../ui/blocks/profile/custom-words/ProfileMyWords";
 import ProfileMyFriends from "../ui/blocks/profile/friends/ProfileMyFriends";
 import FriendBlocked from "../ui/blocks/profile/friends/FriendBlocked";
 import { useDeleteFriendRelation } from "@/hooks/api/mutations/useDeleteFriendRelation";
